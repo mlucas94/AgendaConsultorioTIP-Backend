@@ -4,18 +4,18 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "TURNOS")
+@Table(name = "turnos")
 public class Turno {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     private LocalDateTime horarioInicio;
     private LocalDateTime horarioFin;
     private String tipo;
 
     //TODO: @ManyToOne
-    private Long idPaciente;
+    private Long pacienteId;
 
     public Long getId() {
         return id;
@@ -49,12 +49,12 @@ public class Turno {
         this.tipo = tipo;
     }
 
-    public Long getIdPaciente() {
-        return idPaciente;
+    public Long getPacienteId() {
+        return pacienteId;
     }
 
-    public void setIdPaciente(Long idPaciente) {
-        this.idPaciente = idPaciente;
+    public void setPacienteId(Long pacienteId) {
+        this.pacienteId = pacienteId;
     }
 
     public static TurnoBuilder builder() {
@@ -89,7 +89,7 @@ public class Turno {
         }
 
         public TurnoBuilder idPaciente(Long idPaciente) {
-            turno.setIdPaciente(idPaciente);
+            turno.setPacienteId(idPaciente);
             return this;
         }
 
