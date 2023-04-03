@@ -1,9 +1,13 @@
 package com.unqttip.agendaprofesional.model;
 
+import com.unqttip.agendaprofesional.dtos.NuevoPacienteDTO;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "pacientes")
 public class Paciente {
 
@@ -159,5 +163,14 @@ public class Paciente {
         public Paciente build() {
             return paciente;
         }
+    }
+
+    // Comportamiento
+    public Paciente(NuevoPacienteDTO nuevoPacienteDTO) {
+        this.dni = nuevoPacienteDTO.getDni();
+        this.nombre = nuevoPacienteDTO.getNombre();
+        this.email = nuevoPacienteDTO.getEmail();
+        this.telefono = nuevoPacienteDTO.getTelefono();
+        this.edad = nuevoPacienteDTO.getEdad();
     }
 }

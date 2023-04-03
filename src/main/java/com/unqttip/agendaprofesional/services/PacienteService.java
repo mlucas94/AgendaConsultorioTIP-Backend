@@ -1,5 +1,6 @@
 package com.unqttip.agendaprofesional.services;
 
+import com.unqttip.agendaprofesional.dtos.NuevoPacienteDTO;
 import com.unqttip.agendaprofesional.model.Paciente;
 import com.unqttip.agendaprofesional.repositories.PacienteDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,10 @@ public class PacienteService {
 
     public List<Paciente> recuperarPacientePorDniSimilar(Long dni) {
         return pacienteDAO.findByDniLikeOrderedByDni(dni);
+    }
+
+    public void guardarPaciente(NuevoPacienteDTO nuevoPacienteDTO) {
+        Paciente nuevoPaciente = new Paciente(nuevoPacienteDTO);
+        pacienteDAO.save(nuevoPaciente);
     }
 }
