@@ -44,7 +44,6 @@ public class TurnoController {
         Turno turno = Turno.builder()
                 .horarioInicio(LocalDateTime.now())
                 .horarioFin(LocalDateTime.now().plusHours(1))
-                .idPaciente(123L)
                 .tipo("Consulta")
                 .build();
         turnoService.guardarTurno(turno);
