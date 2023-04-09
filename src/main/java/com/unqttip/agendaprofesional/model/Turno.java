@@ -1,16 +1,23 @@
 package com.unqttip.agendaprofesional.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "turnos")
 public class Turno {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
     private LocalDateTime horarioInicio;
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
     private LocalDateTime horarioFin;
     private String tipo;
 
