@@ -1,6 +1,7 @@
 package com.unqttip.agendaprofesional.services;
 
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
+import com.unqttip.agendaprofesional.exceptions.BadRequestException;
 import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.repositories.TurnoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,16 @@ public class TurnoService {
     }
 
     public void guardarTurno(NuevoTurnoDTO turnoDto) {
-        Turno turno = turnoDto.turnoFromDTO(entityManager);
-        turnoDAO.save(turno);
+        Turno nuevoTurno = turnoDto.turnoFromDTO(entityManager);
+        validarTurno(nuevoTurno);
+        turnoDAO.save(nuevoTurno);
+    }
+
+    private void validarTurno(Turno turno) {
+        if (turno.getHorarioFin().isBefore(turno.getHorarioInicio())) {
+            throw new BadRequestException("Un turno no puede tener una hora final previa a la hora de inicio");
+        } else if (turnoDAO.findInTheSameHour(turno.getHorarioInicio(), turno.getHorarioFin()) > 0) {
+            throw new BadRequestException("Existen turnos guardados en el horario elegido");
+        }
     }
 }
