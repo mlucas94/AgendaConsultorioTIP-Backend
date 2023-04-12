@@ -2,7 +2,9 @@ package com.unqttip.agendaprofesional.services;
 
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import com.unqttip.agendaprofesional.exceptions.BadRequestException;
+import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import com.unqttip.agendaprofesional.model.Turno;
+import com.unqttip.agendaprofesional.repositories.PacienteDAO;
 import com.unqttip.agendaprofesional.repositories.TurnoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ public class TurnoService {
 
     @Autowired
     private TurnoDAO turnoDAO;
+    @Autowired
+    private PacienteDAO pacienteDAO;
     @Autowired
     private EntityManager entityManager;
 
@@ -31,6 +35,9 @@ public class TurnoService {
     public void guardarTurno(NuevoTurnoDTO turnoDto) {
         if (turnoDto == null || turnoDto.hasNullProperties()) {
             throw new BadRequestException("Es necesario contar con todas las propiedades del turno para crearlo.");
+        }
+        if (pacienteDAO.findById(turnoDto.getPaciente()).isEmpty()) {
+            throw new NotFoundException("El usuario " + turnoDto.getPaciente() + " no existe.");
         }
         Turno nuevoTurno = turnoDto.turnoFromDTO(entityManager);
         validarTurno(nuevoTurno);
