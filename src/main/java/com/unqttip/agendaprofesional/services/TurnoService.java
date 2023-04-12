@@ -29,6 +29,9 @@ public class TurnoService {
     }
 
     public void guardarTurno(NuevoTurnoDTO turnoDto) {
+        if (turnoDto == null || turnoDto.hasNullProperties()) {
+            throw new BadRequestException("Es necesario contar con todas las propiedades del turno para crearlo.");
+        }
         Turno nuevoTurno = turnoDto.turnoFromDTO(entityManager);
         validarTurno(nuevoTurno);
         turnoDAO.save(nuevoTurno);
@@ -36,9 +39,9 @@ public class TurnoService {
 
     private void validarTurno(Turno turno) {
         if (turno.getHorarioFin().isBefore(turno.getHorarioInicio())) {
-            throw new BadRequestException("Un turno no puede tener una hora final previa a la hora de inicio");
+            throw new BadRequestException("Un turno no puede tener una hora final previa a la hora de inicio.");
         } else if (turnoDAO.findInTheSameHour(turno.getHorarioInicio(), turno.getHorarioFin()) > 0) {
-            throw new BadRequestException("Existen turnos guardados en el horario elegido");
+            throw new BadRequestException("Existen turnos guardados en el horario elegido.");
         }
     }
 }

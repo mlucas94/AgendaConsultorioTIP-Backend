@@ -69,4 +69,8 @@ public class NuevoTurnoDTO {
         turno.setPaciente(pacienteTurno);
         return turno;
     }
+
+    public Boolean hasNullProperties() {
+        return (tipo == null || fecha == null || horaInicio == null || horaFin == null || paciente == null);
+    }
 }
