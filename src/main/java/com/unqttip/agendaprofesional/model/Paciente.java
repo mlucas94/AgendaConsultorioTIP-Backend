@@ -1,5 +1,6 @@
 package com.unqttip.agendaprofesional.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.unqttip.agendaprofesional.dtos.NuevoPacienteDTO;
 import lombok.NoArgsConstructor;
 
@@ -27,7 +28,8 @@ public class Paciente {
     private String obraSocial;
     private String plan;
 
-    @OneToMany //TODO: agregar (mappedBy="paciente") después de modificar turno
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="paciente") //TODO: agregar (mappedBy="paciente") después de modificar turno
     private List<Turno> turnos;
 
     // Getters and setters

@@ -1,15 +1,13 @@
 package com.unqttip.agendaprofesional.controllers;
 
+import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.repositories.TurnoDAO;
 import com.unqttip.agendaprofesional.services.TurnoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,13 +38,15 @@ public class TurnoController {
     }
 
     @PostMapping("/turnos")
-    public void crearTurno() {
+    public void crearTurno(@RequestBody NuevoTurnoDTO turnoDTO) {
+        /*
         Turno turno = Turno.builder()
                 .horarioInicio(LocalDateTime.now())
                 .horarioFin(LocalDateTime.now().plusHours(1))
-                .idPaciente(123L)
                 .tipo("Consulta")
                 .build();
         turnoService.guardarTurno(turno);
+         */
+        this.turnoService.guardarTurno(turnoDTO);
     }
 }

@@ -1,21 +1,30 @@
 package com.unqttip.agendaprofesional.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "turnos")
 public class Turno {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
     private LocalDateTime horarioInicio;
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
     private LocalDateTime horarioFin;
     private String tipo;
 
     //TODO: @ManyToOne
-    private Long pacienteId;
+    @ManyToOne(fetch =FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name="paciente_id", referencedColumnName = "id")
+    private Paciente paciente;
 
     public Long getId() {
         return id;
@@ -49,12 +58,12 @@ public class Turno {
         this.tipo = tipo;
     }
 
-    public Long getPacienteId() {
-        return pacienteId;
+    public Paciente getPaciente() {
+        return paciente;
     }
 
-    public void setPacienteId(Long pacienteId) {
-        this.pacienteId = pacienteId;
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
     }
 
     public static TurnoBuilder builder() {
@@ -88,8 +97,8 @@ public class Turno {
             return this;
         }
 
-        public TurnoBuilder idPaciente(Long idPaciente) {
-            turno.setPacienteId(idPaciente);
+        public TurnoBuilder idPaciente(Paciente paciente) {
+            turno.setPaciente(paciente);
             return this;
         }
 
