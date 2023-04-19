@@ -5,6 +5,7 @@ import com.unqttip.agendaprofesional.dtos.NuevoPacienteDTO;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -174,5 +175,8 @@ public class Paciente {
         this.email = nuevoPacienteDTO.getEmail();
         this.telefono = nuevoPacienteDTO.getTelefono();
         this.edad = nuevoPacienteDTO.getEdad();
+        this.obraSocial = nuevoPacienteDTO.getObraSocial();
+        this.plan = nuevoPacienteDTO.getPlan();
+        this.turnos = Collections.emptyList();
     }
 }
