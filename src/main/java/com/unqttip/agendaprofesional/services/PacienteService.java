@@ -33,7 +33,7 @@ public class PacienteService {
         return maybePaciente.get();
     }
 
-    public List<Paciente> recuperarPacientePorDniSimilar(Long dni) {
+    public List<Paciente> recuperarPacientesPorDniSimilar(Long dni) {
         return pacienteDAO.findByDniLikeOrderedByDni(dni);
     }
 

@@ -113,7 +113,7 @@ public class PacienteServiceTest {
         when(pacienteDAO.findByDniLikeOrderedByDni(1L)).thenReturn(Collections.singletonList(paciente1));
 
         // act
-        List<Paciente> pacienteListRes = pacienteService.recuperarPacientePorDniSimilar(1L);
+        List<Paciente> pacienteListRes = pacienteService.recuperarPacientesPorDniSimilar(1L);
 
         // assert
         verify(pacienteDAO, atLeastOnce()).findByDniLikeOrderedByDni(1L);
@@ -127,7 +127,7 @@ public class PacienteServiceTest {
         when(pacienteDAO.findByDniLikeOrderedByDni(1L)).thenReturn(Collections.emptyList());
 
         // act
-        List<Paciente> pacienteListRes = pacienteService.recuperarPacientePorDniSimilar(1L);
+        List<Paciente> pacienteListRes = pacienteService.recuperarPacientesPorDniSimilar(1L);
 
         // assert
         verify(pacienteDAO, atLeastOnce()).findByDniLikeOrderedByDni(1L);

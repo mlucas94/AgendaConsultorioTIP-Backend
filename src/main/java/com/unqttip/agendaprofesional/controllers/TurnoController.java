@@ -39,14 +39,6 @@ public class TurnoController {
 
     @PostMapping("/turnos")
     public void crearTurno(@RequestBody NuevoTurnoDTO turnoDTO) {
-        /*
-        Turno turno = Turno.builder()
-                .horarioInicio(LocalDateTime.now())
-                .horarioFin(LocalDateTime.now().plusHours(1))
-                .tipo("Consulta")
-                .build();
-        turnoService.guardarTurno(turno);
-         */
         this.turnoService.guardarTurno(turnoDTO);
     }
 }
