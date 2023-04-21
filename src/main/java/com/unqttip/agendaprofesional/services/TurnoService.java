@@ -25,6 +25,9 @@ public class TurnoService {
 
     public Turno recuperarTurno(Long id) {
         Optional<Turno> maybeTurno = turnoDAO.findById(id);
+        if (maybeTurno.isEmpty()) {
+            throw new NotFoundException("El turno " + id + " no existe.");
+        }
         return maybeTurno.get();
     }
 

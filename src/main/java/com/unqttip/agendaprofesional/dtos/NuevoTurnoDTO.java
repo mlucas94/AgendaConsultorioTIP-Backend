@@ -73,4 +73,45 @@ public class NuevoTurnoDTO {
     public Boolean hasNullProperties() {
         return (tipo == null || fecha == null || horaInicio == null || horaFin == null || paciente == null);
     }
+
+    public static NuevoTurnoDTOBuilder builder() {
+        return new NuevoTurnoDTOBuilder();
+    }
+
+    public static final class NuevoTurnoDTOBuilder {
+        private NuevoTurnoDTO nuevoTurnoDTO;
+
+        private NuevoTurnoDTOBuilder() {
+            nuevoTurnoDTO = new NuevoTurnoDTO();
+        }
+
+        public NuevoTurnoDTOBuilder tipo(String tipo) {
+            nuevoTurnoDTO.setTipo(tipo);
+            return this;
+        }
+
+        public NuevoTurnoDTOBuilder fecha(String fecha) {
+            nuevoTurnoDTO.setFecha(fecha);
+            return this;
+        }
+
+        public NuevoTurnoDTOBuilder horaInicio(String horaInicio) {
+            nuevoTurnoDTO.setHoraInicio(horaInicio);
+            return this;
+        }
+
+        public NuevoTurnoDTOBuilder horaFin(String horaFin) {
+            nuevoTurnoDTO.setHoraFin(horaFin);
+            return this;
+        }
+
+        public NuevoTurnoDTOBuilder paciente(Long paciente) {
+            nuevoTurnoDTO.setPaciente(paciente);
+            return this;
+        }
+
+        public NuevoTurnoDTO build() {
+            return nuevoTurnoDTO;
+        }
+    }
 }

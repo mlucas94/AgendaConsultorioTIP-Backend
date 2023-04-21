@@ -1,7 +1,6 @@
 package com.unqttip.agendaprofesional.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -97,7 +96,7 @@ public class Turno {
             return this;
         }
 
-        public TurnoBuilder idPaciente(Paciente paciente) {
+        public TurnoBuilder paciente(Paciente paciente) {
             turno.setPaciente(paciente);
             return this;
         }
