@@ -54,12 +54,12 @@ public class PacienteControllerTest {
     void recuperarPacientePorDniSimilar_devuelveListaDePaciente() {
         List<Paciente> listaPacientesEsperados = Collections.singletonList(crearPacienteTest());
 
-        when(pacienteService.recuperarPacientesPorDniSimilar(12L)).thenReturn(listaPacientesEsperados);
+        when(pacienteService.recuperarPacientesPorDniONombreSimilar("12")).thenReturn(listaPacientesEsperados);
 
-        ResponseEntity<List<Paciente>> listaPacientesRes = pacienteController.recuperarPacientesPorDniSimilar(12L);
+        ResponseEntity<List<Paciente>> listaPacientesRes = pacienteController.recuperarPacientesPorDniONombreSimilar("12");
         assertEquals(HttpStatus.OK, listaPacientesRes.getStatusCode());
         assertEquals(listaPacientesEsperados, listaPacientesRes.getBody());
-        verify(pacienteService, atLeastOnce()).recuperarPacientesPorDniSimilar(12L);
+        verify(pacienteService, atLeastOnce()).recuperarPacientesPorDniONombreSimilar("12");
     }
 
     @Test

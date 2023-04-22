@@ -33,8 +33,8 @@ public class PacienteService {
         return maybePaciente.get();
     }
 
-    public List<Paciente> recuperarPacientesPorDniSimilar(Long dni) {
-        return pacienteDAO.findByDniLikeOrderedByDni(dni);
+    public List<Paciente> recuperarPacientesPorDniONombreSimilar(String dniONombre) {
+        return pacienteDAO.findByDniLikeOrNombreLikeOrderedByDni(dniONombre);
     }
 
     public void guardarPaciente(NuevoPacienteDTO nuevoPacienteDTO) {
