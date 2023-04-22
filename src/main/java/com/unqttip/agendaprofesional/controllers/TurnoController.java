@@ -20,13 +20,6 @@ public class TurnoController {
     @Autowired
     private TurnoService turnoService;
 
-    @GetMapping("/turno-test/")
-    public ResponseEntity<Turno> byTurnoId() throws Exception {
-        Turno turno = new Turno();
-        turno.setId(1L);
-        return ResponseEntity.ok(turno);
-    }
-
     @GetMapping("/turnos/{id}")
     public ResponseEntity<Turno> recuperarTurno(@PathVariable Long id) {
         return ResponseEntity.ok(turnoService.recuperarTurno(id));

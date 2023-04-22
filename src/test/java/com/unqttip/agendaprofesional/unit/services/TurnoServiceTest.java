@@ -85,7 +85,7 @@ public class TurnoServiceTest {
     void guardarTurno_seGuardaCorrectamente() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
                 .tipo("Consulta")
-                .fecha("2023-04-21")
+                .fecha("2024-04-21")
                 .horaInicio("09:00")
                 .horaFin("09:30")
                 .paciente(1L)
@@ -93,8 +93,8 @@ public class TurnoServiceTest {
         Paciente paciente = crearPacienteTest();
 
         Turno turnoEsperado = Turno.builder()
-                .horarioInicio(LocalDateTime.of(2023, 4, 21, 9, 0))
-                .horarioFin(LocalDateTime.of(2023, 4, 21, 9, 30))
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 30))
                 .tipo("Consulta")
                 .paciente(paciente)
                 .build();
@@ -114,7 +114,7 @@ public class TurnoServiceTest {
     void guardarTurnoNull_devuelveBadRequest() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
                 .tipo(null)
-                .fecha("2023-04-21")
+                .fecha("2024-04-21")
                 .horaInicio("09:00")
                 .horaFin("09:30")
                 .paciente(1L)
@@ -130,7 +130,7 @@ public class TurnoServiceTest {
     void guardarTurnoConPacienteInexistente_devuelveErrorNotFound() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
                 .tipo("Consulta")
-                .fecha("2023-04-21")
+                .fecha("2024-04-21")
                 .horaInicio("09:00")
                 .horaFin("09:30")
                 .paciente(1L)
@@ -148,7 +148,7 @@ public class TurnoServiceTest {
     void guardarTurnoConHorarioAlReves_devuelveErrorBadRequest() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
                 .tipo("Consulta")
-                .fecha("2023-04-21")
+                .fecha("2024-04-21")
                 .horaInicio("09:30")
                 .horaFin("09:00")
                 .paciente(1L)
@@ -156,8 +156,8 @@ public class TurnoServiceTest {
         Paciente paciente = crearPacienteTest();
 
         Turno turnoEsperado = Turno.builder()
-                .horarioInicio(LocalDateTime.of(2023, 4, 21, 9, 30))
-                .horarioFin(LocalDateTime.of(2023, 4, 21, 9, 0))
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 30))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 0))
                 .tipo("Consulta")
                 .paciente(paciente)
                 .build();
@@ -175,7 +175,7 @@ public class TurnoServiceTest {
     void guardarTurnoEnHorarioOcupado_devuelveBadRequestException() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
                 .tipo("Consulta")
-                .fecha("2023-04-21")
+                .fecha("2024-04-21")
                 .horaInicio("09:00")
                 .horaFin("09:30")
                 .paciente(1L)
@@ -183,8 +183,8 @@ public class TurnoServiceTest {
         Paciente paciente = crearPacienteTest();
 
         Turno turnoEsperado = Turno.builder()
-                .horarioInicio(LocalDateTime.of(2023, 4, 21, 9, 0))
-                .horarioFin(LocalDateTime.of(2023, 4, 21, 9, 30))
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 30))
                 .tipo("Consulta")
                 .paciente(paciente)
                 .build();
