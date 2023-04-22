@@ -20,13 +20,6 @@ public class TurnoController {
     @Autowired
     private TurnoService turnoService;
 
-    @GetMapping("/turno-test/")
-    public ResponseEntity<Turno> byTurnoId() throws Exception {
-        Turno turno = new Turno();
-        turno.setId(1L);
-        return ResponseEntity.ok(turno);
-    }
-
     @GetMapping("/turnos/{id}")
     public ResponseEntity<Turno> recuperarTurno(@PathVariable Long id) {
         return ResponseEntity.ok(turnoService.recuperarTurno(id));
@@ -39,14 +32,6 @@ public class TurnoController {
 
     @PostMapping("/turnos")
     public void crearTurno(@RequestBody NuevoTurnoDTO turnoDTO) {
-        /*
-        Turno turno = Turno.builder()
-                .horarioInicio(LocalDateTime.now())
-                .horarioFin(LocalDateTime.now().plusHours(1))
-                .tipo("Consulta")
-                .build();
-        turnoService.guardarTurno(turno);
-         */
         this.turnoService.guardarTurno(turnoDTO);
     }
 }

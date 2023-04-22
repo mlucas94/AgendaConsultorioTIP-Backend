@@ -28,8 +28,8 @@ public class PacienteController {
     }
 
     @GetMapping("/pacientes/dni")
-    public ResponseEntity<List<Paciente>> buscarPacientePorDniSimilar(@RequestParam Long dni) {
-        return ResponseEntity.ok(pacienteService.recuperarPacientePorDniSimilar(dni));
+    public ResponseEntity<List<Paciente>> recuperarPacientesPorDniSimilar(@RequestParam Long dni) {
+        return ResponseEntity.ok(pacienteService.recuperarPacientesPorDniSimilar(dni));
     }
 
     @PostMapping("/pacientes")
