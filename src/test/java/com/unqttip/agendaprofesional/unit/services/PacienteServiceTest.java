@@ -110,13 +110,13 @@ public class PacienteServiceTest {
                 .turnos(Collections.emptyList())
                 .build();
 
-        when(pacienteDAO.findByDniLikeOrderedByDni(1L)).thenReturn(Collections.singletonList(paciente1));
+        when(pacienteDAO.findByDniLikeOrNombreLikeOrderedByDni("1")).thenReturn(Collections.singletonList(paciente1));
 
         // act
-        List<Paciente> pacienteListRes = pacienteService.recuperarPacientesPorDniSimilar(1L);
+        List<Paciente> pacienteListRes = pacienteService.recuperarPacientesPorDniONombreSimilar("1");
 
         // assert
-        verify(pacienteDAO, atLeastOnce()).findByDniLikeOrderedByDni(1L);
+        verify(pacienteDAO, atLeastOnce()).findByDniLikeOrNombreLikeOrderedByDni("1");
         assertEquals(1, pacienteListRes.size());
         assertEquals(paciente1, pacienteListRes.get(0));
     }
@@ -124,13 +124,13 @@ public class PacienteServiceTest {
     @Test
     void recuperarPacientePorDniSimilar_devuelveListaVacia() {
         //arrange
-        when(pacienteDAO.findByDniLikeOrderedByDni(1L)).thenReturn(Collections.emptyList());
+        when(pacienteDAO.findByDniLikeOrNombreLikeOrderedByDni("1")).thenReturn(Collections.emptyList());
 
         // act
-        List<Paciente> pacienteListRes = pacienteService.recuperarPacientesPorDniSimilar(1L);
+        List<Paciente> pacienteListRes = pacienteService.recuperarPacientesPorDniONombreSimilar("1");
 
         // assert
-        verify(pacienteDAO, atLeastOnce()).findByDniLikeOrderedByDni(1L);
+        verify(pacienteDAO, atLeastOnce()).findByDniLikeOrNombreLikeOrderedByDni("1");
         assertTrue(pacienteListRes.isEmpty());
     }
 
