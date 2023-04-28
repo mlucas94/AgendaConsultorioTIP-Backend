@@ -18,7 +18,7 @@ public class Turno {
     private LocalDateTime horarioInicio;
     @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
     private LocalDateTime horarioFin;
-    private String tipo;
+    private TipoDeTurno tipo;
 
     //TODO: @ManyToOne
     @ManyToOne(fetch =FetchType.EAGER,cascade = CascadeType.ALL)
@@ -49,11 +49,11 @@ public class Turno {
         this.horarioFin = horarioFin;
     }
 
-    public String getTipo() {
+    public TipoDeTurno getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoDeTurno tipo) {
         this.tipo = tipo;
     }
 
@@ -91,7 +91,7 @@ public class Turno {
             return this;
         }
 
-        public TurnoBuilder tipo(String tipo) {
+        public TurnoBuilder tipo(TipoDeTurno tipo) {
             turno.setTipo(tipo);
             return this;
         }

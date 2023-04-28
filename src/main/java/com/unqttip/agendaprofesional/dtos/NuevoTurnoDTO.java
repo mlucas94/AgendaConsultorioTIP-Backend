@@ -1,12 +1,14 @@
 package com.unqttip.agendaprofesional.dtos;
 
 import com.unqttip.agendaprofesional.model.Paciente;
+import com.unqttip.agendaprofesional.model.TipoDeTurno;
 import com.unqttip.agendaprofesional.model.Turno;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class NuevoTurnoDTO {
     private String tipo;
@@ -64,7 +66,7 @@ public class NuevoTurnoDTO {
         LocalDateTime horarioFin = LocalDateTime.parse(horaFinString, formatter);
         turno.setHorarioInicio(horarioInicio);
         turno.setHorarioFin(horarioFin);
-        turno.setTipo(this.tipo);
+        turno.setTipo(TipoDeTurno.valueOf(this.tipo.toUpperCase(Locale.ROOT)));
         Paciente pacienteTurno = entityManager.getReference(Paciente.class, this.paciente);
         turno.setPaciente(pacienteTurno);
         return turno;

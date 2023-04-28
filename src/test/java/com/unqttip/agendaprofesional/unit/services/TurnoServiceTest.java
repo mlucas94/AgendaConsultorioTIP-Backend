@@ -4,6 +4,7 @@ import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import com.unqttip.agendaprofesional.exceptions.BadRequestException;
 import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import com.unqttip.agendaprofesional.model.Paciente;
+import com.unqttip.agendaprofesional.model.TipoDeTurno;
 import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.repositories.PacienteDAO;
 import com.unqttip.agendaprofesional.repositories.TurnoDAO;
@@ -43,7 +44,7 @@ public class TurnoServiceTest {
                 .id(1L)
                 .horarioInicio(horaInicio)
                 .horarioFin(horaFin)
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(crearPacienteTest())
                 .build();
 
@@ -70,7 +71,7 @@ public class TurnoServiceTest {
                 .id(1L)
                 .horarioInicio(horaInicio)
                 .horarioFin(horaFin)
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(crearPacienteTest())
                 .build();
 
@@ -84,7 +85,7 @@ public class TurnoServiceTest {
     @Test
     void guardarTurno_seGuardaCorrectamente() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
-                .tipo("Consulta")
+                .tipo("REGULAR")
                 .fecha("2024-04-21")
                 .horaInicio("09:00")
                 .horaFin("09:30")
@@ -95,7 +96,7 @@ public class TurnoServiceTest {
         Turno turnoEsperado = Turno.builder()
                 .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 0))
                 .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 30))
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(paciente)
                 .build();
 
@@ -129,7 +130,7 @@ public class TurnoServiceTest {
     @Test
     void guardarTurnoConPacienteInexistente_devuelveErrorNotFound() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
-                .tipo("Consulta")
+                .tipo("REGULAR")
                 .fecha("2024-04-21")
                 .horaInicio("09:00")
                 .horaFin("09:30")
@@ -147,7 +148,7 @@ public class TurnoServiceTest {
     @Test
     void guardarTurnoConHorarioAlReves_devuelveErrorBadRequest() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
-                .tipo("Consulta")
+                .tipo("REGULAR")
                 .fecha("2024-04-21")
                 .horaInicio("09:30")
                 .horaFin("09:00")
@@ -158,7 +159,7 @@ public class TurnoServiceTest {
         Turno turnoEsperado = Turno.builder()
                 .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 30))
                 .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 0))
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(paciente)
                 .build();
 
@@ -174,7 +175,7 @@ public class TurnoServiceTest {
     @Test
     void guardarTurnoEnHorarioOcupado_devuelveBadRequestException() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
-                .tipo("Consulta")
+                .tipo("REGULAR")
                 .fecha("2024-04-21")
                 .horaInicio("09:00")
                 .horaFin("09:30")
@@ -185,7 +186,7 @@ public class TurnoServiceTest {
         Turno turnoEsperado = Turno.builder()
                 .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 0))
                 .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 30))
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(paciente)
                 .build();
 

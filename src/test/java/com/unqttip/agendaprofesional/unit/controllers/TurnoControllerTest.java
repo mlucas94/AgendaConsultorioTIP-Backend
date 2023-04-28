@@ -3,6 +3,7 @@ package com.unqttip.agendaprofesional.unit.controllers;
 import com.unqttip.agendaprofesional.controllers.TurnoController;
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import com.unqttip.agendaprofesional.model.Paciente;
+import com.unqttip.agendaprofesional.model.TipoDeTurno;
 import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.services.TurnoService;
 import org.junit.jupiter.api.Test;
@@ -72,7 +73,7 @@ public class TurnoControllerTest {
                 .id(1L)
                 .horarioInicio(LocalDateTime.now().plusDays(1L))
                 .horarioFin(LocalDateTime.now().plusDays(1L).plusMinutes(30L))
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(crearPacienteTest())
                 .build();
     }
