@@ -101,11 +101,11 @@ public class TurnoServiceTest {
 
         when(pacienteDAO.findById(1L)).thenReturn(Optional.of(paciente));
         when(entityManager.getReference(Paciente.class, 1L)).thenReturn(paciente);
-        when(turnoDAO.findInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin())).thenReturn(0);
+        when(turnoDAO.findCountInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin())).thenReturn(0);
 
         turnoService.guardarTurno(nuevoTurnoDTO);
         verify(turnoDAO, atLeastOnce()).save(any(Turno.class));
-        verify(turnoDAO, atLeastOnce()).findInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin());
+        verify(turnoDAO, atLeastOnce()).findCountInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin());
         verify(pacienteDAO, atLeastOnce()).findById(1L);
         verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
     }
@@ -191,10 +191,10 @@ public class TurnoServiceTest {
 
         when(pacienteDAO.findById(1L)).thenReturn(Optional.of(paciente));
         when(entityManager.getReference(Paciente.class, 1L)).thenReturn(paciente);
-        when(turnoDAO.findInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin())).thenReturn(1);
+        when(turnoDAO.findCountInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin())).thenReturn(1);
 
         assertThrows(BadRequestException.class, () -> {turnoService.guardarTurno(nuevoTurnoDTO);});
-        verify(turnoDAO, atLeastOnce()).findInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin());
+        verify(turnoDAO, atLeastOnce()).findCountInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin());
         verify(pacienteDAO, atLeastOnce()).findById(1L);
         verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
     }

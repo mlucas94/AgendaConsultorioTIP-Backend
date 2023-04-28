@@ -12,5 +12,8 @@ import java.util.List;
 @Repository
 public interface TurnoDAO extends JpaRepository<Turno, Long> {
     @Query(value = "select count(1) from turnos where (:hora_inicio between horario_inicio and horario_fin) or (:hora_fin between horario_inicio and horario_fin)", nativeQuery = true)
-    Integer findInTheSameHour(@Param("hora_inicio") LocalDateTime hora_inicio, @Param("hora_fin") LocalDateTime hora_fin);
+    Integer findCountInTheSameHour(@Param("hora_inicio") LocalDateTime hora_inicio, @Param("hora_fin") LocalDateTime hora_fin);
+
+    @Query(value = "select * from turnos where (horario_inicio between :hora_inicio and :hora_fin) or (horario_fin between :hora_inicio and :hora_fin) order by horario_inicio asc;", nativeQuery = true)
+    List<Turno> findWithinHourRange(@Param("hora_inicio") LocalDateTime hora_inicio, @Param("hora_fin") LocalDateTime hora_fin);
 }
