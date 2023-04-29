@@ -58,7 +58,7 @@ public class TurnoService {
     private void validarTurno(Turno turno) {
         if (turno.getHorarioFin().isBefore(turno.getHorarioInicio())) {
             throw new BadRequestException("Un turno no puede tener una hora final previa a la hora de inicio.");
-        } else if (turnoDAO.findCountInTheSameHour(turno.getHorarioInicio(), turno.getHorarioFin()) > 0) {
+        } else if (turnoDAO.findCountInTheSameHour(turno.getHorarioInicio().plusMinutes(1), turno.getHorarioFin().minusMinutes(1)) > 0) {
             throw new BadRequestException("Existen turnos guardados en el horario elegido.");
         }
     }
