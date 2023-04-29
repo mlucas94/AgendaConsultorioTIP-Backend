@@ -2,6 +2,7 @@ package com.unqttip.agendaprofesional.services;
 
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import com.unqttip.agendaprofesional.dtos.RangoDeTurnoDTO;
+import com.unqttip.agendaprofesional.model.RangoDeTurno;
 import com.unqttip.agendaprofesional.exceptions.BadRequestException;
 import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import com.unqttip.agendaprofesional.model.TipoDeTurno;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class TurnoService {
@@ -68,53 +68,59 @@ public class TurnoService {
         LocalDateTime horaFin = LocalDateTime.of(fecha, LocalTime.MAX);
 
         if (tipoDeTurno == TipoDeTurno.PRIORITARIO) {
-            return dividirEnRangosDeTiempo(horaInicio, horaFin);
+            return dividirEnRangosDeTiempo(horaInicio, horaFin)
+                    .stream().map(turnoDividido -> turnoDividido.fromModelObject()).collect(Collectors.toList());
         }
 
         LocalDateTime horaLaboralInicio = LocalDateTime.of(fecha, LocalTime.of(9, 0, 0));
         LocalDateTime horaLaboralFin = LocalDateTime.of(fecha, LocalTime.of(18, 0, 0));
 
         if (tipoDeTurno == TipoDeTurno.SOBRETURNO) {
-            return dividirEnRangosDeTiempo(horaLaboralInicio, horaLaboralFin);
+            return dividirEnRangosDeTiempo(horaLaboralInicio, horaLaboralFin)
+                    .stream().map(turnoDividido -> turnoDividido.fromModelObject()).collect(Collectors.toList());
         }
 
         List<Turno> turnosDelDia = turnoDAO.findWithinHourRange(horaInicio, horaFin);
-        List<RangoDeTurnoDTO> rangosDisponibles = recuperarHorariosDisponibles(horaLaboralInicio, horaLaboralFin, turnosDelDia);
+        if (turnosDelDia.isEmpty()) {
+            return dividirEnRangosDeTiempo(horaLaboralInicio, horaLaboralFin)
+                    .stream().map(turnoDividido -> turnoDividido.fromModelObject()).collect(Collectors.toList());
+        }
+        List<RangoDeTurno> rangosDisponibles = recuperarHorariosDisponibles(horaLaboralInicio, horaLaboralFin, turnosDelDia);
 
-        List<RangoDeTurnoDTO> turnosDivididos = new ArrayList<>();
-        rangosDisponibles.forEach(rangoDeTurnoDTO -> {
-            rangosDisponibles.addAll(dividirEnRangosDeTiempo(rangoDeTurnoDTO.getHoraInicio(), rangoDeTurnoDTO.getHoraFin()));
+        List<RangoDeTurno> turnosDivididos = new ArrayList<>();
+        rangosDisponibles.forEach(rangoDeTurno -> {
+            rangosDisponibles.addAll(dividirEnRangosDeTiempo(rangoDeTurno.getHoraInicio(), rangoDeTurno.getHoraFin()));
         });
 
-        return turnosDivididos;
+        return turnosDivididos.stream().map(turnoDividido -> turnoDividido.fromModelObject()).collect(Collectors.toList());
     }
 
-    private List<RangoDeTurnoDTO> recuperarHorariosDisponibles(LocalDateTime horaInicio, LocalDateTime horaFin, List<Turno> turnos) {
-        List<RangoDeTurnoDTO> rangoDeTurnoDTOList = new ArrayList<>();
+    private List<RangoDeTurno> recuperarHorariosDisponibles(LocalDateTime horaInicio, LocalDateTime horaFin, List<Turno> turnos) {
+        List<RangoDeTurno> rangoDeTurnoList = new ArrayList<>();
 
         for (int i = 0; i < turnos.size(); i++) {
             if (i == 0) {
-                rangoDeTurnoDTOList.add(new RangoDeTurnoDTO(horaInicio, turnos.get(i).getHorarioInicio()));
+                rangoDeTurnoList.add(new RangoDeTurno(horaInicio, turnos.get(i).getHorarioInicio()));
             } else if (i == turnos.size() - 1) {
-                rangoDeTurnoDTOList.add(new RangoDeTurnoDTO(turnos.get(i-1).getHorarioFin(), turnos.get(i).getHorarioInicio()));
+                rangoDeTurnoList.add(new RangoDeTurno(turnos.get(i-1).getHorarioFin(), turnos.get(i).getHorarioInicio()));
             } else {
-                rangoDeTurnoDTOList.add(new RangoDeTurnoDTO(turnos.get(i-1).getHorarioFin(), horaFin));
+                rangoDeTurnoList.add(new RangoDeTurno(turnos.get(i-1).getHorarioFin(), horaFin));
             }
         }
 
-        return rangoDeTurnoDTOList;
+        return rangoDeTurnoList;
     }
 
-    private List<RangoDeTurnoDTO> dividirEnRangosDeTiempo(LocalDateTime inicio, LocalDateTime fin) {
-        List<RangoDeTurnoDTO> rangosDeTiempo = new ArrayList<>();
+    private List<RangoDeTurno> dividirEnRangosDeTiempo(LocalDateTime inicio, LocalDateTime fin) {
+        List<RangoDeTurno> rangosDeTiempo = new ArrayList<>();
 
         LocalDateTime tiempoActual = inicio;
-        while (tiempoActual.isBefore(inicio)) {
+        while (tiempoActual.isBefore(fin)) {
             LocalDateTime proxima = tiempoActual.plusMinutes(30);
             if (proxima.isAfter(fin)) {
                 proxima = fin;
             }
-            rangosDeTiempo.add(new RangoDeTurnoDTO(tiempoActual, proxima));
+            rangosDeTiempo.add(new RangoDeTurno(tiempoActual, proxima));
             tiempoActual = proxima;
         }
 

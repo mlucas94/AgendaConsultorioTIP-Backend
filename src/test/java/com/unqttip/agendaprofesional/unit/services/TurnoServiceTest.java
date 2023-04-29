@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -198,6 +199,11 @@ public class TurnoServiceTest {
         verify(turnoDAO, atLeastOnce()).findCountInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin());
         verify(pacienteDAO, atLeastOnce()).findById(1L);
         verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
+    }
+
+    @Test
+    void testBandaTurno() {
+        turnoService.recuperarBandasHorariasDisponibles(LocalDate.now(), TipoDeTurno.SOBRETURNO);
     }
 
     private Paciente crearPacienteTest() {
