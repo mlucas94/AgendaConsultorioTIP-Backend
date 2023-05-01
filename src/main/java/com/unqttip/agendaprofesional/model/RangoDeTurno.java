@@ -7,12 +7,14 @@ import java.time.LocalDateTime;
 public class RangoDeTurno {
     private LocalDateTime horaInicio;
     private LocalDateTime horaFin;
+    private Boolean disponible;
 
     public RangoDeTurno() {}
 
-    public RangoDeTurno(LocalDateTime horaInicio, LocalDateTime horaFin) {
+    public RangoDeTurno(LocalDateTime horaInicio, LocalDateTime horaFin, Boolean disponible) {
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
+        this.disponible = disponible;
     }
 
     public LocalDateTime getHoraInicio() {
@@ -29,6 +31,14 @@ public class RangoDeTurno {
 
     public void setHoraFin(LocalDateTime horaFin) {
         this.horaFin = horaFin;
+    }
+
+    public Boolean getDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(Boolean disponible) {
+        this.disponible = disponible;
     }
 
     public static RangoDeTurnoDTOBuilder builder() {
@@ -52,6 +62,11 @@ public class RangoDeTurno {
             return this;
         }
 
+        public RangoDeTurnoDTOBuilder disponible(Boolean disponible) {
+            rangoDeTurno.setDisponible(disponible);
+            return this;
+        }
+
         public RangoDeTurno build() {
             return rangoDeTurno;
         }
@@ -61,6 +76,14 @@ public class RangoDeTurno {
         RangoDeTurnoDTO rangoDeTurnoDTO = new RangoDeTurnoDTO();
         rangoDeTurnoDTO.setHoraInicio(this.getHoraInicio().toString());
         rangoDeTurnoDTO.setHoraFin(this.getHoraFin().toString());
+        rangoDeTurnoDTO.setDisponible(this.disponible);
         return rangoDeTurnoDTO;
+    }
+
+    public Boolean sigueDisponible(Turno turno) {
+        return !(this.horaInicio.isAfter(turno.getHorarioInicio()) && this.horaInicio.isBefore(turno.getHorarioFin()))
+                && (!this.horaInicio.isEqual(turno.getHorarioInicio()))
+                && !(this.horaFin.isAfter(turno.getHorarioInicio()) && this.horaFin.isBefore(turno.getHorarioFin()))
+                && (!this.horaFin.isEqual(turno.getHorarioFin()));
     }
 }

@@ -3,6 +3,7 @@ package com.unqttip.agendaprofesional.dtos;
 public class RangoDeTurnoDTO {
     private String horaInicio;
     private String horaFin;
+    private Boolean disponible;
 
     public String getHoraInicio() {
         return horaInicio;
@@ -18,5 +19,13 @@ public class RangoDeTurnoDTO {
 
     public void setHoraFin(String horaFin) {
         this.horaFin = horaFin;
+    }
+
+    public Boolean getDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(Boolean disponible) {
+        this.disponible = disponible;
     }
 }
