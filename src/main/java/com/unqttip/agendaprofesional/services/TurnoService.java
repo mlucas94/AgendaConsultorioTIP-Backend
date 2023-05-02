@@ -76,11 +76,12 @@ public class TurnoService {
 
         List<RangoDeTurno> rangoDeTurnosDisponibles = dividirEnRangosDeTiempo(horaLaboralInicio, horaLaboralFin);
 
+        List<Turno> turnosDelDia = turnoDAO.findWithinHourRange(horaInicio, horaFin);
         if (tipoDeTurno == TipoDeTurno.SOBRETURNO) {
-            return deListaDeModeloAListaDeDTO(rangoDeTurnosDisponibles);
+            turnosDelDia = turnosDelDia.stream().filter(turno -> turno.getTipo() != TipoDeTurno.REGULAR).collect(Collectors.toList());
+            return deListaDeModeloAListaDeDTO(chequearDisponibilidad(rangoDeTurnosDisponibles, turnosDelDia));
         }
 
-        List<Turno> turnosDelDia = turnoDAO.findWithinHourRange(horaInicio, horaFin);
         if (turnosDelDia.isEmpty()) {
             return deListaDeModeloAListaDeDTO(rangoDeTurnosDisponibles);
         }
