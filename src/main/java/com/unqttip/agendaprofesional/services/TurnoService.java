@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,9 @@ public class TurnoService {
     private PacienteDAO pacienteDAO;
     @Autowired
     private EntityManager entityManager;
+
+    private static final LocalTime HORA_LABORAL_INICIO = LocalTime.of(9, 0, 0);
+    private static final LocalTime HORA_LABORAL_FIN = LocalTime.of(18, 0, 0);
 
     public Turno recuperarTurno(Long id) {
         Optional<Turno> maybeTurno = turnoDAO.findById(id);
@@ -59,15 +63,29 @@ public class TurnoService {
         if (turno.getHorarioFin().isBefore(turno.getHorarioInicio())) {
             throw new BadRequestException("Un turno no puede tener una hora final previa a la hora de inicio.");
         }
-        if (turno.getTipo() == TipoDeTurno.REGULAR && turnoDAO.findCountInTheSameHour(turno.getHorarioInicio().plusMinutes(1), turno.getHorarioFin().minusMinutes(1)) > 0) {
+        if ((turno.getTipo() == TipoDeTurno.REGULAR
+                || turno.getTipo() == TipoDeTurno.PRIORITARIO)
+                && nuevoTurnoEnBandaHorariaNoValida(turno)) {
+            throw new BadRequestException("Un turno " + turno.getTipo().name().toLowerCase(Locale.ROOT) + " debe estar entre las 9 y las 18 hs.");
+        }
+        if (nuevoTurnoEnHorarioNoDisponible(turno)) {
             throw new BadRequestException("Existen turnos guardados en el horario elegido.");
         }
-        if (turno.getTipo() == TipoDeTurno.SOBRETURNO && turnoDAO.findCountNonRegularsWithinHourRange(turno.getHorarioInicio().plusMinutes(1), turno.getHorarioFin().minusMinutes(1)) > 0) {
-            throw new BadRequestException("Existen turnos guardados en el horario elegido.");
-        }
-        if (turno.getTipo() == TipoDeTurno.PRIORITARIO && turnoDAO.findCountPrioritariosWithinHourRange(turno.getHorarioInicio().plusMinutes(1), turno.getHorarioFin().minusMinutes(1)) > 0) {
-            throw new BadRequestException("Existen turnos guardados en el horario elegido.");
-        }
+    }
+
+    private Boolean nuevoTurnoEnBandaHorariaNoValida(Turno turno) {
+        LocalDateTime horarioLaboralInicio = LocalDateTime.of(turno.getHorarioInicio().toLocalDate(), HORA_LABORAL_INICIO);
+        LocalDateTime horarioLaboralFin = LocalDateTime.of(turno.getHorarioInicio().toLocalDate(), HORA_LABORAL_FIN);
+        return turno.getHorarioInicio().isBefore(horarioLaboralInicio)
+                || turno.getHorarioInicio().isAfter(horarioLaboralFin)
+                || turno.getHorarioFin().isBefore(horarioLaboralInicio)
+                || turno.getHorarioFin().isAfter(horarioLaboralFin);
+    }
+
+    private Boolean nuevoTurnoEnHorarioNoDisponible(Turno turno) {
+        return (turno.getTipo() == TipoDeTurno.REGULAR && turnoDAO.findCountInTheSameHour(turno.getHorarioInicio().plusMinutes(1), turno.getHorarioFin().minusMinutes(1)) > 0)
+                || (turno.getTipo() == TipoDeTurno.SOBRETURNO && turnoDAO.findCountNonRegularsWithinHourRange(turno.getHorarioInicio().plusMinutes(1), turno.getHorarioFin().minusMinutes(1)) > 0)
+                || (turno.getTipo() == TipoDeTurno.PRIORITARIO && turnoDAO.findCountPrioritariosWithinHourRange(turno.getHorarioInicio().plusMinutes(1), turno.getHorarioFin().minusMinutes(1)) > 0);
     }
 
     public List<RangoDeTurnoDTO> recuperarBandasHorariasDisponibles(LocalDate fecha, TipoDeTurno tipoDeTurno) {
@@ -78,8 +96,8 @@ public class TurnoService {
             return deListaDeModeloAListaDeDTO(dividirEnRangosDeTiempo(horaInicio, horaFin));
         }
 
-        LocalDateTime horaLaboralInicio = LocalDateTime.of(fecha, LocalTime.of(9, 0, 0));
-        LocalDateTime horaLaboralFin = LocalDateTime.of(fecha, LocalTime.of(18, 0, 0));
+        LocalDateTime horaLaboralInicio = LocalDateTime.of(fecha, HORA_LABORAL_INICIO);
+        LocalDateTime horaLaboralFin = LocalDateTime.of(fecha, HORA_LABORAL_FIN);
 
         List<RangoDeTurno> rangoDeTurnosDisponibles = dividirEnRangosDeTiempo(horaLaboralInicio, horaLaboralFin);
 

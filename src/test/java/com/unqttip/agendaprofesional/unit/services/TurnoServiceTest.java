@@ -84,7 +84,7 @@ public class TurnoServiceTest {
     }
 
     @Test
-    void guardarTurno_seGuardaCorrectamente() {
+    void guardarTurnoRegular_seGuardaCorrectamente() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
                 .tipo("REGULAR")
                 .fecha("2024-04-21")
@@ -103,11 +103,40 @@ public class TurnoServiceTest {
 
         when(pacienteDAO.findById(1L)).thenReturn(Optional.of(paciente));
         when(entityManager.getReference(Paciente.class, 1L)).thenReturn(paciente);
-        when(turnoDAO.findCountInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin())).thenReturn(0);
+        when(turnoDAO.findCountInTheSameHour(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1))).thenReturn(0);
 
         turnoService.guardarTurno(nuevoTurnoDTO);
         verify(turnoDAO, atLeastOnce()).save(any(Turno.class));
-        verify(turnoDAO, atLeastOnce()).findCountInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin());
+        verify(turnoDAO, atLeastOnce()).findCountInTheSameHour(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1));
+        verify(pacienteDAO, atLeastOnce()).findById(1L);
+        verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
+    }
+
+    @Test
+    void guardarTurnoSobreturno_seGuardaCorrectamente() {
+        NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
+                .tipo("SOBRETURNO")
+                .fecha("2024-04-21")
+                .horaInicio("10:00")
+                .horaFin("10:30")
+                .paciente(1L)
+                .build();
+        Paciente paciente = crearPacienteTest();
+
+        Turno turnoEsperado = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 10, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 10, 30))
+                .tipo(TipoDeTurno.SOBRETURNO)
+                .paciente(paciente)
+                .build();
+
+        when(pacienteDAO.findById(1L)).thenReturn(Optional.of(paciente));
+        when(entityManager.getReference(Paciente.class, 1L)).thenReturn(paciente);
+        when(turnoDAO.findCountNonRegularsWithinHourRange(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1))).thenReturn(0);
+
+        turnoService.guardarTurno(nuevoTurnoDTO);
+        verify(turnoDAO, atLeastOnce()).save(any(Turno.class));
+        verify(turnoDAO, atLeastOnce()).findCountNonRegularsWithinHourRange(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1));
         verify(pacienteDAO, atLeastOnce()).findById(1L);
         verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
     }
@@ -129,7 +158,7 @@ public class TurnoServiceTest {
     }
 
     @Test
-    void guardarTurnoConPacienteInexistente_devuelveErrorNotFound() {
+    void guardarTurnoRegularConPacienteInexistente_devuelveErrorNotFound() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
                 .tipo("REGULAR")
                 .fecha("2024-04-21")
@@ -174,6 +203,32 @@ public class TurnoServiceTest {
     }
 
     @Test
+    void guardarTurnoEnHorarioNoPermitido_devuelveBadRequestException() {
+        NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
+                .tipo("REGULAR")
+                .fecha("2024-04-21")
+                .horaInicio("07:00")
+                .horaFin("07:30")
+                .paciente(1L)
+                .build();
+        Paciente paciente = crearPacienteTest();
+
+        Turno turnoEsperado = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 7, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 7, 30))
+                .tipo(TipoDeTurno.REGULAR)
+                .paciente(paciente)
+                .build();
+
+        when(pacienteDAO.findById(1L)).thenReturn(Optional.of(paciente));
+        when(entityManager.getReference(Paciente.class, 1L)).thenReturn(paciente);
+
+        assertThrows(BadRequestException.class, () -> {turnoService.guardarTurno(nuevoTurnoDTO);});
+        verify(pacienteDAO, atLeastOnce()).findById(1L);
+        verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
+    }
+
+    @Test
     void guardarTurnoEnHorarioOcupado_devuelveBadRequestException() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
                 .tipo("REGULAR")
@@ -193,10 +248,10 @@ public class TurnoServiceTest {
 
         when(pacienteDAO.findById(1L)).thenReturn(Optional.of(paciente));
         when(entityManager.getReference(Paciente.class, 1L)).thenReturn(paciente);
-        when(turnoDAO.findCountInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin())).thenReturn(1);
+        when(turnoDAO.findCountInTheSameHour(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1))).thenReturn(1);
 
         assertThrows(BadRequestException.class, () -> {turnoService.guardarTurno(nuevoTurnoDTO);});
-        verify(turnoDAO, atLeastOnce()).findCountInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin());
+        verify(turnoDAO, atLeastOnce()).findCountInTheSameHour(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1));
         verify(pacienteDAO, atLeastOnce()).findById(1L);
         verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
     }
