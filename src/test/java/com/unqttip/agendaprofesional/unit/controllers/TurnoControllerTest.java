@@ -1,7 +1,9 @@
 package com.unqttip.agendaprofesional.unit.controllers;
 
 import com.unqttip.agendaprofesional.controllers.TurnoController;
+import com.unqttip.agendaprofesional.dtos.ConsultaTurnosDisponiblesDTO;
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
+import com.unqttip.agendaprofesional.dtos.RangoDeTurnoDTO;
 import com.unqttip.agendaprofesional.model.Paciente;
 import com.unqttip.agendaprofesional.model.TipoDeTurno;
 import com.unqttip.agendaprofesional.model.Turno;
@@ -14,9 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -66,6 +71,27 @@ public class TurnoControllerTest {
         turnoController.crearTurno(nuevoTurnoDTO);
 
         verify(turnoService, atLeastOnce()).guardarTurno(nuevoTurnoDTO);
+    }
+
+    @Test
+    void recuperarHorariosDisponiblesTest() {
+        ConsultaTurnosDisponiblesDTO consultaTurnosDisponiblesDTO = ConsultaTurnosDisponiblesDTO.builder()
+                .fechaConsultada("2023-06-04")
+                .tipoDeTurno("REGULAR")
+                .build();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate fechaConsulta = LocalDate.parse(consultaTurnosDisponiblesDTO.getFechaConsultada(), formatter);
+        TipoDeTurno tipoDeTurnoConsulta = TipoDeTurno.valueOf(consultaTurnosDisponiblesDTO.getTipoDeTurno().toUpperCase(Locale.ROOT));
+
+        List<RangoDeTurnoDTO> rangoDeTurnoDTOListEsperada = Collections.singletonList(new RangoDeTurnoDTO());
+        when(turnoService.recuperarBandasHorariasDisponibles(fechaConsulta, tipoDeTurnoConsulta)).thenReturn(rangoDeTurnoDTOListEsperada);
+
+        ResponseEntity<List<RangoDeTurnoDTO>> rangoDeTurnoDTOListRes = turnoController.recuperarHorariosDisponibles(consultaTurnosDisponiblesDTO);
+
+        assertEquals(HttpStatus.OK, rangoDeTurnoDTOListRes.getStatusCode());
+        assertEquals(rangoDeTurnoDTOListEsperada, rangoDeTurnoDTOListRes.getBody());
+        verify(turnoService, atLeastOnce()).recuperarBandasHorariasDisponibles(fechaConsulta, tipoDeTurnoConsulta);
     }
 
     private Turno crearTurnoTest() {

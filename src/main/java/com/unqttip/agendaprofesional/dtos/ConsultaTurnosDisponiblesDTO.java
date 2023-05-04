@@ -19,4 +19,30 @@ public class ConsultaTurnosDisponiblesDTO {
     public void setTipoDeTurno(String tipoDeTurno) {
         this.tipoDeTurno = tipoDeTurno;
     }
+
+    public static ConsultaTurnosDisponiblesDTOBuilder builder() {
+        return new ConsultaTurnosDisponiblesDTOBuilder();
+    }
+
+    public static final class ConsultaTurnosDisponiblesDTOBuilder {
+        private ConsultaTurnosDisponiblesDTO consultaTurnosDisponiblesDTO;
+
+        private ConsultaTurnosDisponiblesDTOBuilder() {
+            consultaTurnosDisponiblesDTO = new ConsultaTurnosDisponiblesDTO();
+        }
+
+        public ConsultaTurnosDisponiblesDTOBuilder fechaConsultada(String fechaConsultada) {
+            consultaTurnosDisponiblesDTO.setFechaConsultada(fechaConsultada);
+            return this;
+        }
+
+        public ConsultaTurnosDisponiblesDTOBuilder tipoDeTurno(String tipoDeTurno) {
+            consultaTurnosDisponiblesDTO.setTipoDeTurno(tipoDeTurno);
+            return this;
+        }
+
+        public ConsultaTurnosDisponiblesDTO build() {
+            return consultaTurnosDisponiblesDTO;
+        }
+    }
 }
