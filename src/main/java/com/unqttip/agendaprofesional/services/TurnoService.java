@@ -93,22 +93,20 @@ public class TurnoService {
         LocalDateTime horaFin = LocalDateTime.of(fecha, LocalTime.MAX);
 
         if (tipoDeTurno == TipoDeTurno.PRIORITARIO) {
-            return deListaDeModeloAListaDeDTO(dividirEnRangosDeTiempo(horaInicio, horaFin));
+            List<Turno> turnosDelDia = turnoDAO.findWithinHourRange(horaInicio, horaFin);
+            turnosDelDia = turnosDelDia.stream().filter(turno -> turno.getTipo() == TipoDeTurno.PRIORITARIO).collect(Collectors.toList());
+            return deListaDeModeloAListaDeDTO(chequearDisponibilidad(dividirEnRangosDeTiempo(horaInicio, horaFin), turnosDelDia));
         }
 
         LocalDateTime horaLaboralInicio = LocalDateTime.of(fecha, HORA_LABORAL_INICIO);
         LocalDateTime horaLaboralFin = LocalDateTime.of(fecha, HORA_LABORAL_FIN);
 
         List<RangoDeTurno> rangoDeTurnosDisponibles = dividirEnRangosDeTiempo(horaLaboralInicio, horaLaboralFin);
+        List<Turno> turnosDelDia = turnoDAO.findWithinHourRange(horaLaboralInicio, horaLaboralFin);
 
-        List<Turno> turnosDelDia = turnoDAO.findWithinHourRange(horaInicio, horaFin);
         if (tipoDeTurno == TipoDeTurno.SOBRETURNO) {
             turnosDelDia = turnosDelDia.stream().filter(turno -> turno.getTipo() != TipoDeTurno.REGULAR).collect(Collectors.toList());
             return deListaDeModeloAListaDeDTO(chequearDisponibilidad(rangoDeTurnosDisponibles, turnosDelDia));
-        }
-
-        if (turnosDelDia.isEmpty()) {
-            return deListaDeModeloAListaDeDTO(rangoDeTurnosDisponibles);
         }
 
         return deListaDeModeloAListaDeDTO(chequearDisponibilidad(rangoDeTurnosDisponibles, turnosDelDia));
