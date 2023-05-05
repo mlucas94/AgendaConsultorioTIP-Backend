@@ -74,8 +74,8 @@ public class RangoDeTurno {
 
     public RangoDeTurnoDTO fromModelObject() {
         RangoDeTurnoDTO rangoDeTurnoDTO = new RangoDeTurnoDTO();
-        rangoDeTurnoDTO.setHoraInicio(this.getHoraInicio().toString());
-        rangoDeTurnoDTO.setHoraFin(this.getHoraFin().toString());
+        rangoDeTurnoDTO.setHoraInicio(this.getHoraInicio().toLocalDate().toString() + " " + this.getHoraInicio().toLocalTime().toString());
+        rangoDeTurnoDTO.setHoraFin(this.getHoraFin().toLocalDate().toString() + " " + this.getHoraFin().toLocalTime().toString());
         rangoDeTurnoDTO.setDisponible(this.disponible);
         return rangoDeTurnoDTO;
     }
