@@ -75,19 +75,17 @@ public class TurnoControllerTest {
 
     @Test
     void recuperarHorariosDisponiblesTest() {
-        ConsultaTurnosDisponiblesDTO consultaTurnosDisponiblesDTO = ConsultaTurnosDisponiblesDTO.builder()
-                .fechaConsultada("2023-06-04")
-                .tipoDeTurno("REGULAR")
-                .build();
+        String fechaConsultadaParam = "2023-06-04";
+        String tipoDeTurnoParam = "REGULAR";
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fechaConsulta = LocalDate.parse(consultaTurnosDisponiblesDTO.getFechaConsultada(), formatter);
-        TipoDeTurno tipoDeTurnoConsulta = TipoDeTurno.valueOf(consultaTurnosDisponiblesDTO.getTipoDeTurno().toUpperCase(Locale.ROOT));
+        LocalDate fechaConsulta = LocalDate.parse(fechaConsultadaParam, formatter);
+        TipoDeTurno tipoDeTurnoConsulta = TipoDeTurno.valueOf(tipoDeTurnoParam);
 
         List<RangoDeTurnoDTO> rangoDeTurnoDTOListEsperada = Collections.singletonList(new RangoDeTurnoDTO());
         when(turnoService.recuperarBandasHorariasDisponibles(fechaConsulta, tipoDeTurnoConsulta)).thenReturn(rangoDeTurnoDTOListEsperada);
 
-        ResponseEntity<List<RangoDeTurnoDTO>> rangoDeTurnoDTOListRes = turnoController.recuperarHorariosDisponibles(consultaTurnosDisponiblesDTO);
+        ResponseEntity<List<RangoDeTurnoDTO>> rangoDeTurnoDTOListRes = turnoController.recuperarHorariosDisponibles(fechaConsultadaParam, tipoDeTurnoParam);
 
         assertEquals(HttpStatus.OK, rangoDeTurnoDTOListRes.getStatusCode());
         assertEquals(rangoDeTurnoDTOListEsperada, rangoDeTurnoDTOListRes.getBody());

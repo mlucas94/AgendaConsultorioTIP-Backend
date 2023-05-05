@@ -40,7 +40,10 @@ public class TurnoController {
     }
 
     @GetMapping("/turnos/horarios-disponibles")
-    public ResponseEntity<List<RangoDeTurnoDTO>> recuperarHorariosDisponibles(@RequestBody ConsultaTurnosDisponiblesDTO consultaTurnosDisponiblesDTO) {
+    public ResponseEntity<List<RangoDeTurnoDTO>> recuperarHorariosDisponibles(@RequestParam String fechaConsultada, @RequestParam String tipoDeTurno) {
+        ConsultaTurnosDisponiblesDTO consultaTurnosDisponiblesDTO = new ConsultaTurnosDisponiblesDTO();
+        consultaTurnosDisponiblesDTO.setFechaConsultada(fechaConsultada);
+        consultaTurnosDisponiblesDTO.setTipoDeTurno(tipoDeTurno);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate fechaConsulta = LocalDate.parse(consultaTurnosDisponiblesDTO.getFechaConsultada(), formatter);
         TipoDeTurno tipoDeTurnoConsulta = TipoDeTurno.valueOf(consultaTurnosDisponiblesDTO.getTipoDeTurno().toUpperCase(Locale.ROOT));
