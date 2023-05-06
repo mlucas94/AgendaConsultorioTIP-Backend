@@ -1,8 +1,11 @@
 package com.unqttip.agendaprofesional.unit.controllers;
 
 import com.unqttip.agendaprofesional.controllers.TurnoController;
+import com.unqttip.agendaprofesional.dtos.ConsultaTurnosDisponiblesDTO;
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
+import com.unqttip.agendaprofesional.dtos.RangoDeTurnoDTO;
 import com.unqttip.agendaprofesional.model.Paciente;
+import com.unqttip.agendaprofesional.model.TipoDeTurno;
 import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.services.TurnoService;
 import org.junit.jupiter.api.Test;
@@ -13,9 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -67,12 +73,31 @@ public class TurnoControllerTest {
         verify(turnoService, atLeastOnce()).guardarTurno(nuevoTurnoDTO);
     }
 
+    @Test
+    void recuperarHorariosDisponiblesTest() {
+        String fechaConsultadaParam = "2023-06-04";
+        String tipoDeTurnoParam = "REGULAR";
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate fechaConsulta = LocalDate.parse(fechaConsultadaParam, formatter);
+        TipoDeTurno tipoDeTurnoConsulta = TipoDeTurno.valueOf(tipoDeTurnoParam);
+
+        List<RangoDeTurnoDTO> rangoDeTurnoDTOListEsperada = Collections.singletonList(new RangoDeTurnoDTO());
+        when(turnoService.recuperarBandasHorariasDisponibles(fechaConsulta, tipoDeTurnoConsulta)).thenReturn(rangoDeTurnoDTOListEsperada);
+
+        ResponseEntity<List<RangoDeTurnoDTO>> rangoDeTurnoDTOListRes = turnoController.recuperarHorariosDisponibles(fechaConsultadaParam, tipoDeTurnoParam);
+
+        assertEquals(HttpStatus.OK, rangoDeTurnoDTOListRes.getStatusCode());
+        assertEquals(rangoDeTurnoDTOListEsperada, rangoDeTurnoDTOListRes.getBody());
+        verify(turnoService, atLeastOnce()).recuperarBandasHorariasDisponibles(fechaConsulta, tipoDeTurnoConsulta);
+    }
+
     private Turno crearTurnoTest() {
         return Turno.builder()
                 .id(1L)
                 .horarioInicio(LocalDateTime.now().plusDays(1L))
                 .horarioFin(LocalDateTime.now().plusDays(1L).plusMinutes(30L))
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(crearPacienteTest())
                 .build();
     }

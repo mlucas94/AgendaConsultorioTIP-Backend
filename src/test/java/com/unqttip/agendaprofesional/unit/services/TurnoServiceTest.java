@@ -1,9 +1,11 @@
 package com.unqttip.agendaprofesional.unit.services;
 
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
+import com.unqttip.agendaprofesional.dtos.RangoDeTurnoDTO;
 import com.unqttip.agendaprofesional.exceptions.BadRequestException;
 import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import com.unqttip.agendaprofesional.model.Paciente;
+import com.unqttip.agendaprofesional.model.TipoDeTurno;
 import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.repositories.PacienteDAO;
 import com.unqttip.agendaprofesional.repositories.TurnoDAO;
@@ -15,7 +17,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +47,7 @@ public class TurnoServiceTest {
                 .id(1L)
                 .horarioInicio(horaInicio)
                 .horarioFin(horaFin)
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(crearPacienteTest())
                 .build();
 
@@ -70,7 +74,7 @@ public class TurnoServiceTest {
                 .id(1L)
                 .horarioInicio(horaInicio)
                 .horarioFin(horaFin)
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(crearPacienteTest())
                 .build();
 
@@ -82,9 +86,9 @@ public class TurnoServiceTest {
     }
 
     @Test
-    void guardarTurno_seGuardaCorrectamente() {
+    void guardarTurnoRegular_seGuardaCorrectamente() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
-                .tipo("Consulta")
+                .tipo("REGULAR")
                 .fecha("2024-04-21")
                 .horaInicio("09:00")
                 .horaFin("09:30")
@@ -95,17 +99,46 @@ public class TurnoServiceTest {
         Turno turnoEsperado = Turno.builder()
                 .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 0))
                 .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 30))
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(paciente)
                 .build();
 
         when(pacienteDAO.findById(1L)).thenReturn(Optional.of(paciente));
         when(entityManager.getReference(Paciente.class, 1L)).thenReturn(paciente);
-        when(turnoDAO.findInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin())).thenReturn(0);
+        when(turnoDAO.findCountInTheSameHour(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1))).thenReturn(0);
 
         turnoService.guardarTurno(nuevoTurnoDTO);
         verify(turnoDAO, atLeastOnce()).save(any(Turno.class));
-        verify(turnoDAO, atLeastOnce()).findInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin());
+        verify(turnoDAO, atLeastOnce()).findCountInTheSameHour(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1));
+        verify(pacienteDAO, atLeastOnce()).findById(1L);
+        verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
+    }
+
+    @Test
+    void guardarTurnoSobreturno_seGuardaCorrectamente() {
+        NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
+                .tipo("SOBRETURNO")
+                .fecha("2024-04-21")
+                .horaInicio("10:00")
+                .horaFin("10:30")
+                .paciente(1L)
+                .build();
+        Paciente paciente = crearPacienteTest();
+
+        Turno turnoEsperado = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 10, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 10, 30))
+                .tipo(TipoDeTurno.SOBRETURNO)
+                .paciente(paciente)
+                .build();
+
+        when(pacienteDAO.findById(1L)).thenReturn(Optional.of(paciente));
+        when(entityManager.getReference(Paciente.class, 1L)).thenReturn(paciente);
+        when(turnoDAO.findCountNonRegularsWithinHourRange(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1))).thenReturn(0);
+
+        turnoService.guardarTurno(nuevoTurnoDTO);
+        verify(turnoDAO, atLeastOnce()).save(any(Turno.class));
+        verify(turnoDAO, atLeastOnce()).findCountNonRegularsWithinHourRange(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1));
         verify(pacienteDAO, atLeastOnce()).findById(1L);
         verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
     }
@@ -127,9 +160,9 @@ public class TurnoServiceTest {
     }
 
     @Test
-    void guardarTurnoConPacienteInexistente_devuelveErrorNotFound() {
+    void guardarTurnoRegularConPacienteInexistente_devuelveErrorNotFound() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
-                .tipo("Consulta")
+                .tipo("REGULAR")
                 .fecha("2024-04-21")
                 .horaInicio("09:00")
                 .horaFin("09:30")
@@ -147,7 +180,7 @@ public class TurnoServiceTest {
     @Test
     void guardarTurnoConHorarioAlReves_devuelveErrorBadRequest() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
-                .tipo("Consulta")
+                .tipo("REGULAR")
                 .fecha("2024-04-21")
                 .horaInicio("09:30")
                 .horaFin("09:00")
@@ -158,7 +191,7 @@ public class TurnoServiceTest {
         Turno turnoEsperado = Turno.builder()
                 .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 30))
                 .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 0))
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(paciente)
                 .build();
 
@@ -172,9 +205,35 @@ public class TurnoServiceTest {
     }
 
     @Test
+    void guardarTurnoEnHorarioNoPermitido_devuelveBadRequestException() {
+        NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
+                .tipo("REGULAR")
+                .fecha("2024-04-21")
+                .horaInicio("07:00")
+                .horaFin("07:30")
+                .paciente(1L)
+                .build();
+        Paciente paciente = crearPacienteTest();
+
+        Turno turnoEsperado = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 7, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 7, 30))
+                .tipo(TipoDeTurno.REGULAR)
+                .paciente(paciente)
+                .build();
+
+        when(pacienteDAO.findById(1L)).thenReturn(Optional.of(paciente));
+        when(entityManager.getReference(Paciente.class, 1L)).thenReturn(paciente);
+
+        assertThrows(BadRequestException.class, () -> {turnoService.guardarTurno(nuevoTurnoDTO);});
+        verify(pacienteDAO, atLeastOnce()).findById(1L);
+        verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
+    }
+
+    @Test
     void guardarTurnoEnHorarioOcupado_devuelveBadRequestException() {
         NuevoTurnoDTO nuevoTurnoDTO = NuevoTurnoDTO.builder()
-                .tipo("Consulta")
+                .tipo("REGULAR")
                 .fecha("2024-04-21")
                 .horaInicio("09:00")
                 .horaFin("09:30")
@@ -185,18 +244,123 @@ public class TurnoServiceTest {
         Turno turnoEsperado = Turno.builder()
                 .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 0))
                 .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 30))
-                .tipo("Consulta")
+                .tipo(TipoDeTurno.REGULAR)
                 .paciente(paciente)
                 .build();
 
         when(pacienteDAO.findById(1L)).thenReturn(Optional.of(paciente));
         when(entityManager.getReference(Paciente.class, 1L)).thenReturn(paciente);
-        when(turnoDAO.findInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin())).thenReturn(1);
+        when(turnoDAO.findCountInTheSameHour(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1))).thenReturn(1);
 
         assertThrows(BadRequestException.class, () -> {turnoService.guardarTurno(nuevoTurnoDTO);});
-        verify(turnoDAO, atLeastOnce()).findInTheSameHour(turnoEsperado.getHorarioInicio(), turnoEsperado.getHorarioFin());
+        verify(turnoDAO, atLeastOnce()).findCountInTheSameHour(turnoEsperado.getHorarioInicio().plusMinutes(1), turnoEsperado.getHorarioFin().minusMinutes(1));
         verify(pacienteDAO, atLeastOnce()).findById(1L);
         verify(entityManager, atLeastOnce()).getReference(Paciente.class, 1L);
+    }
+
+    @Test
+    void recuperarBandasHorariasDisponiblesPrioritario() {
+        LocalDate fecha = LocalDate.of(2024, 4, 21);
+        LocalDateTime horaInicio = LocalDateTime.of(fecha, LocalTime.MIN);
+        LocalDateTime horaFin = LocalDateTime.of(fecha, LocalTime.MAX);
+
+        Paciente paciente = crearPacienteTest();
+
+        Turno turnoRegular = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 30))
+                .tipo(TipoDeTurno.REGULAR)
+                .paciente(paciente)
+                .build();
+        Turno turnoSobreturno = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 10, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 10, 30))
+                .tipo(TipoDeTurno.SOBRETURNO)
+                .paciente(paciente)
+                .build();
+        Turno turnoPrioritario = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 11, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 11, 30))
+                .tipo(TipoDeTurno.PRIORITARIO)
+                .paciente(paciente)
+                .build();
+
+        when(turnoDAO.findWithinHourRange(horaInicio, horaFin)).thenReturn(List.of(turnoRegular, turnoSobreturno, turnoPrioritario));
+
+        List<RangoDeTurnoDTO> rangoDeTurnoDTOListRes = turnoService.recuperarBandasHorariasDisponibles(fecha, TipoDeTurno.PRIORITARIO);
+
+        assertEquals(48, rangoDeTurnoDTOListRes.size());
+        assertEquals(1, rangoDeTurnoDTOListRes.stream().filter(rangoDeTurnoDTO -> !rangoDeTurnoDTO.getDisponible()).count());
+    }
+
+    @Test
+    void recuperarBandasHorariasDisponiblesSobreturno() {
+        LocalDate fecha = LocalDate.of(2024, 4, 21);
+        LocalDateTime horaInicio = LocalDateTime.of(fecha, LocalTime.of(9, 0));
+        LocalDateTime horaFin = LocalDateTime.of(fecha, LocalTime.of(18, 0));
+
+        Paciente paciente = crearPacienteTest();
+
+        Turno turnoRegular = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 30))
+                .tipo(TipoDeTurno.REGULAR)
+                .paciente(paciente)
+                .build();
+        Turno turnoSobreturno = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 10, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 10, 30))
+                .tipo(TipoDeTurno.SOBRETURNO)
+                .paciente(paciente)
+                .build();
+        Turno turnoPrioritario = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 11, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 11, 30))
+                .tipo(TipoDeTurno.PRIORITARIO)
+                .paciente(paciente)
+                .build();
+
+        when(turnoDAO.findWithinHourRange(horaInicio, horaFin)).thenReturn(List.of(turnoRegular, turnoSobreturno, turnoPrioritario));
+
+        List<RangoDeTurnoDTO> rangoDeTurnoDTOListRes = turnoService.recuperarBandasHorariasDisponibles(fecha, TipoDeTurno.SOBRETURNO);
+
+        assertEquals(18, rangoDeTurnoDTOListRes.size());
+        assertEquals(2, rangoDeTurnoDTOListRes.stream().filter(rangoDeTurnoDTO -> !rangoDeTurnoDTO.getDisponible()).count());
+    }
+
+    @Test
+    void recuperarBandasHorariasDisponiblesRegular() {
+        LocalDate fecha = LocalDate.of(2024, 4, 21);
+        LocalDateTime horaInicio = LocalDateTime.of(fecha, LocalTime.of(9, 0));
+        LocalDateTime horaFin = LocalDateTime.of(fecha, LocalTime.of(18, 0));
+
+        Paciente paciente = crearPacienteTest();
+
+        Turno turnoRegular = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 9, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 9, 30))
+                .tipo(TipoDeTurno.REGULAR)
+                .paciente(paciente)
+                .build();
+        Turno turnoSobreturno = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 10, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 10, 30))
+                .tipo(TipoDeTurno.SOBRETURNO)
+                .paciente(paciente)
+                .build();
+        Turno turnoPrioritario = Turno.builder()
+                .horarioInicio(LocalDateTime.of(2024, 4, 21, 11, 0))
+                .horarioFin(LocalDateTime.of(2024, 4, 21, 11, 30))
+                .tipo(TipoDeTurno.PRIORITARIO)
+                .paciente(paciente)
+                .build();
+
+        when(turnoDAO.findWithinHourRange(horaInicio, horaFin)).thenReturn(List.of(turnoRegular, turnoSobreturno, turnoPrioritario));
+
+        List<RangoDeTurnoDTO> rangoDeTurnoDTOListRes = turnoService.recuperarBandasHorariasDisponibles(fecha, TipoDeTurno.REGULAR);
+
+        assertEquals(18, rangoDeTurnoDTOListRes.size());
+        assertEquals(3, rangoDeTurnoDTOListRes.stream().filter(rangoDeTurnoDTO -> !rangoDeTurnoDTO.getDisponible()).count());
     }
 
     private Paciente crearPacienteTest() {
