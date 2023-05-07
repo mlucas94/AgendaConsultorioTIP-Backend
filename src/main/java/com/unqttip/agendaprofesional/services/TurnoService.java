@@ -143,4 +143,9 @@ public class TurnoService {
     private List<RangoDeTurnoDTO> deListaDeModeloAListaDeDTO(List<RangoDeTurno> rangoDeTurnos) {
         return rangoDeTurnos.stream().map(RangoDeTurno::fromModelObject).collect(Collectors.toList());
     }
+
+    public List<Turno> recuperarTurnosDia(String fecha) {
+        return turnoDAO.findAllByHorarioInicio(fecha);
+    }
+
 }

@@ -30,8 +30,8 @@ public class TurnoController {
     }
 
     @GetMapping("/turnos")
-    public ResponseEntity<List<Turno>> recuperarTurnos() {
-        return ResponseEntity.ok(turnoService.recuperarTurnos());
+    public ResponseEntity<List<Turno>> recuperarTurnosDia(@RequestParam String fecha) {
+        return ResponseEntity.ok(turnoService.recuperarTurnosDia(fecha));
     }
 
     @PostMapping("/turnos")
