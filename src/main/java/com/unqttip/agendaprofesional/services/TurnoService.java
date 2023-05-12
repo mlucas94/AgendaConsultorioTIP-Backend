@@ -30,6 +30,8 @@ public class TurnoService {
     @Autowired
     private PacienteDAO pacienteDAO;
     @Autowired
+    private EmailService emailService;
+    @Autowired
     private EntityManager entityManager;
 
     private static final LocalTime HORA_LABORAL_INICIO = LocalTime.of(9, 0, 0);
@@ -57,6 +59,7 @@ public class TurnoService {
         Turno nuevoTurno = turnoDto.turnoFromDTO(entityManager);
         validarTurno(nuevoTurno);
         turnoDAO.save(nuevoTurno);
+        emailService.enviarMailNuevoTurno(nuevoTurno);
     }
 
     private void validarTurno(Turno turno) {
