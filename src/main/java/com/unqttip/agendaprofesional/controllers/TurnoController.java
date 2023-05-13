@@ -50,4 +50,21 @@ public class TurnoController {
         List<RangoDeTurnoDTO> rangoDeTurnoList = turnoService.recuperarBandasHorariasDisponibles(fechaConsulta, tipoDeTurnoConsulta);
         return ResponseEntity.ok(rangoDeTurnoList);
     }
+    @GetMapping("/turnos/cantidadTotal")
+    public ResponseEntity<Integer> cantidadDeTurnosDeUnDia(@RequestParam String fechaConsultada) {
+        Integer cantidadDeTurnosTotal = turnoService.cantidadDeTurnosTotalEnDia(fechaConsultada);
+        return ResponseEntity.ok(cantidadDeTurnosTotal);
+    }
+
+    @GetMapping("/turnos/cantidadTotalPrioritarios")
+    public ResponseEntity<Integer> cantidadDeTurnosPrioritariosDeUnDia(@RequestParam String fechaConsultada) {
+        Integer cantidadDeTurnosTotal = turnoService.cantidadDeTurnosPrioritariosTotalEnDia(fechaConsultada);
+        return ResponseEntity.ok(cantidadDeTurnosTotal);
+    }
+
+    @GetMapping("/turnos/prioritariosEnMes")
+    public ResponseEntity<List<String>> diasConPrioritariosEnMes(@RequestParam String fechaConsultada) {
+        List<String> diasConPrioritarios = turnoService.getDiasConPrioritarios(fechaConsultada);
+        return ResponseEntity.ok(diasConPrioritarios);
+    }
 }

@@ -6,7 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -25,5 +29,14 @@ public interface TurnoDAO extends JpaRepository<Turno, Long> {
 
     @Query(value ="select * from turnos where DATE(horario_inicio) = :fecha order by horario_inicio asc", nativeQuery = true)
     List<Turno> findAllByHorarioInicio(@Param("fecha") String fecha);
+
+    @Query(value="select count(id) from turnos where DATE(horario_inicio) =:fecha", nativeQuery = true)
+    Integer countTurnosDelDia(@Param("fecha") String fecha);
+
+    @Query(value="select count(id) from turnos where DATE(horario_inicio) =:fecha and tipo in (2)", nativeQuery = true)
+    Integer countTurnosPrioritariosDelDia(@Param("fecha") String fecha);
+
+    @Query(value="select * from turnos where month(horario_inicio) = month(:fecha) and tipo in (2)", nativeQuery = true)
+    List<Turno> selectHoraInicioWhereMonth(@Param("fecha") String fecha);
 
 }
