@@ -67,7 +67,7 @@ public class TurnoService {
             throw new BadRequestException("Un turno no puede tener una hora final previa a la hora de inicio.");
         }
         if ((turno.getTipo() == TipoDeTurno.REGULAR
-                || turno.getTipo() == TipoDeTurno.PRIORITARIO)
+                || turno.getTipo() == TipoDeTurno.SOBRETURNO)
                 && nuevoTurnoEnBandaHorariaNoValida(turno)) {
             throw new BadRequestException("Un turno " + turno.getTipo().name().toLowerCase(Locale.ROOT) + " debe estar entre las 9 y las 18 hs.");
         }

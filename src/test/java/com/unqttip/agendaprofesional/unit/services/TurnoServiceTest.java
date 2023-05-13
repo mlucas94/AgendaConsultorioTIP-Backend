@@ -9,6 +9,7 @@ import com.unqttip.agendaprofesional.model.TipoDeTurno;
 import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.repositories.PacienteDAO;
 import com.unqttip.agendaprofesional.repositories.TurnoDAO;
+import com.unqttip.agendaprofesional.services.EmailService;
 import com.unqttip.agendaprofesional.services.TurnoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,8 @@ public class TurnoServiceTest {
     private PacienteDAO pacienteDAO;
     @Mock
     private EntityManager entityManager;
+    @Mock
+    private EmailService emailService;
     @InjectMocks
     private TurnoService turnoService;
 
