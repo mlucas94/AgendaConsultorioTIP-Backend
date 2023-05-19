@@ -1,7 +1,9 @@
 package com.unqttip.agendaprofesional.controllers;
 
 import com.unqttip.agendaprofesional.dtos.IntentoDeLoginDTO;
+import com.unqttip.agendaprofesional.dtos.LoginDTO;
 import com.unqttip.agendaprofesional.model.Profesional;
+import com.unqttip.agendaprofesional.services.ProfesionalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfesionalController {
 
     @Autowired
-    private ProfesionalController profesionalController;
+    private ProfesionalService profesionalService;
 
     @PostMapping("/login")
-    public Profesional login(@RequestBody IntentoDeLoginDTO intentoDeLoginDTO) {
-        return profesionalController.login(intentoDeLoginDTO);
+    public LoginDTO login(@RequestBody IntentoDeLoginDTO intentoDeLoginDTO) {
+        return profesionalService.login(intentoDeLoginDTO);
     }
 }

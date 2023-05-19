@@ -1,6 +1,7 @@
 package com.unqttip.agendaprofesional.services;
 
 import com.unqttip.agendaprofesional.dtos.IntentoDeLoginDTO;
+import com.unqttip.agendaprofesional.dtos.LoginDTO;
 import com.unqttip.agendaprofesional.exceptions.ForbiddenException;
 import com.unqttip.agendaprofesional.model.Profesional;
 import com.unqttip.agendaprofesional.repositories.ProfesionalDAO;
@@ -14,13 +15,17 @@ public class ProfesionalService {
     @Autowired
     private ProfesionalDAO profesionalDAO;
 
-    private Profesional login(IntentoDeLoginDTO intentoDeLoginDTO) {
+    public LoginDTO login(IntentoDeLoginDTO intentoDeLoginDTO) {
         Optional<Profesional> profesional = profesionalDAO.findById(intentoDeLoginDTO.getEmail());
 
         if (profesional.isEmpty() || !profesional.get().getPassword().equals(intentoDeLoginDTO.getPassword())) {
             throw new ForbiddenException("Usuario o contraseña incorrectos");
         }
 
-        return profesional.get();
+        return LoginDTO.builder()
+                .email(profesional.get().getEmail())
+                .nombre(profesional.get().getNombre())
+                .token("123") //TODO: agregar generación de token
+                .build();
     }
 }
