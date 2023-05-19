@@ -2,6 +2,7 @@ package com.unqttip.agendaprofesional.config;
 
 import com.unqttip.agendaprofesional.exceptions.ApiError;
 import com.unqttip.agendaprofesional.exceptions.BadRequestException;
+import com.unqttip.agendaprofesional.exceptions.ForbiddenException;
 import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,13 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(value = { NotFoundException.class })
     public ResponseEntity<ApiError> handleNotFoundException(NotFoundException e) {
         ApiError apiError = new ApiError("not_found", e.getMessage(), HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(apiError.getStatus())
+                .body(apiError);
+    }
+
+    @ExceptionHandler(value = { ForbiddenException.class })
+    public ResponseEntity<ApiError> handleForbiddenException(ForbiddenException e) {
+        ApiError apiError = new ApiError("forbidden", e.getMessage(), HttpStatus.FORBIDDEN.value());
         return ResponseEntity.status(apiError.getStatus())
                 .body(apiError);
     }
