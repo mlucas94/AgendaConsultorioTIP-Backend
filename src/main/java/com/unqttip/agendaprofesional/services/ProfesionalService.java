@@ -16,7 +16,7 @@ public class ProfesionalService {
     private ProfesionalDAO profesionalDAO;
 
     public LoginDTO login(IntentoDeLoginDTO intentoDeLoginDTO) {
-        Optional<Profesional> profesional = profesionalDAO.findById(intentoDeLoginDTO.getEmail());
+        Optional<Profesional> profesional = profesionalDAO.findByEmail(intentoDeLoginDTO.getEmail());
 
         if (profesional.isEmpty() || !profesional.get().getPassword().equals(intentoDeLoginDTO.getPassword())) {
             throw new ForbiddenException("Usuario o contraseña incorrectos");
