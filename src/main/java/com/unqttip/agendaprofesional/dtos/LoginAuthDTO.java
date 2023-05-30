@@ -1,12 +1,12 @@
 package com.unqttip.agendaprofesional.dtos;
 
-public class AuthResponse {
+public class LoginAuthDTO {
     private String email;
     private String accessToken;
 
-    public AuthResponse() { }
+    public LoginAuthDTO() { }
 
-    public AuthResponse(String email, String accessToken) {
+    public LoginAuthDTO(String email, String accessToken) {
         this.email = email;
         this.accessToken = accessToken;
     }

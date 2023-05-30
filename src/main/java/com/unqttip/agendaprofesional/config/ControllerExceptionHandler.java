@@ -1,9 +1,6 @@
 package com.unqttip.agendaprofesional.config;
 
-import com.unqttip.agendaprofesional.exceptions.ApiError;
-import com.unqttip.agendaprofesional.exceptions.BadRequestException;
-import com.unqttip.agendaprofesional.exceptions.ForbiddenException;
-import com.unqttip.agendaprofesional.exceptions.NotFoundException;
+import com.unqttip.agendaprofesional.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -37,7 +34,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(value = { AuthenticationException.class })
     public ResponseEntity<ApiError> handleAuthenticationException(AuthenticationException e) {
-        ApiError apiError = new ApiError("forbidden", e.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        ApiError apiError = new ApiError("unauthorized", e.getMessage(), HttpStatus.UNAUTHORIZED.value());
         return ResponseEntity.status(apiError.getStatus())
                 .body(apiError);
     }

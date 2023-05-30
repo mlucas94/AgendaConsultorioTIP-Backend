@@ -1,8 +1,15 @@
 package com.unqttip.agendaprofesional.dtos;
 
-public class IntentoDeLoginDTO {
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
+public class IntentoDeLoginDTO {
+    @NotNull @Email @Length(min = 5, max = 50)
     private String email;
+
+    @NotNull @Length(min = 5, max = 64)
     private String password;
 
     public String getEmail() {
