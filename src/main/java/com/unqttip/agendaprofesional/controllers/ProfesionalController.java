@@ -2,6 +2,7 @@ package com.unqttip.agendaprofesional.controllers;
 
 import com.unqttip.agendaprofesional.dtos.IntentoDeLoginDTO;
 import com.unqttip.agendaprofesional.dtos.LoginAuthDTO;
+import com.unqttip.agendaprofesional.dtos.NuevoProfesionalDTO;
 import com.unqttip.agendaprofesional.services.ProfesionalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -19,10 +20,15 @@ public class ProfesionalController {
     @Autowired
     private ProfesionalService profesionalService;
 
-    @PostMapping("/login")
+    @PostMapping("/profesional/login")
     public ResponseEntity<?> login(@RequestBody @Valid IntentoDeLoginDTO intentoDeLoginDTO) {
-        LoginAuthDTO loginAuthDTO = profesionalService.login(intentoDeLoginDTO);
+        LoginAuthDTO loginAuthDTO = this.profesionalService.login(intentoDeLoginDTO);
 
         return ResponseEntity.ok().body(loginAuthDTO);
+    }
+
+    @PostMapping("/profesional/registrarse")
+    public void registrarNuevoProfesional(@RequestBody NuevoProfesionalDTO nuevoProfesionalDTO) {
+        this.profesionalService.registrar(nuevoProfesionalDTO);
     }
 }
