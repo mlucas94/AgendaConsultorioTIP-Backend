@@ -4,15 +4,24 @@ import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import com.unqttip.agendaprofesional.exceptions.UploadFailedException;
 import com.unqttip.agendaprofesional.model.Archivo;
 import com.unqttip.agendaprofesional.model.Paciente;
+import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.repositories.ArchivoDAO;
 import com.unqttip.agendaprofesional.utils.FileHandlerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.core.io.Resource;
 import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,17 +37,22 @@ public class ArchivoService {
 
     public void guardarArchivo(MultipartFile archivo, Long idPaciente) {
         String rutaArchivo="";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate fechaActual = LocalDate.now();
+        String fechaActualString = fechaActual.format(formatter);
         try {
-            rutaArchivo = fileHandlerUtil.saveFile(archivo, idPaciente);
+            rutaArchivo = fileHandlerUtil.saveFile(archivo, idPaciente, fechaActualString);
         } catch (IOException exception) {
             throw new UploadFailedException("Ocurrio un error al intentar guardar el archivo");
         }
         if(rutaArchivo == "") {
             throw new UploadFailedException("Error al generar la ruta del archivo");
         }
+
         Archivo nuevoArchivo = new Archivo();
         nuevoArchivo.setPaciente(entityManager.getReference(Paciente.class, idPaciente));
-        nuevoArchivo.setPath(rutaArchivo);
+        nuevoArchivo.setFechaCarga(fechaActual);
+        nuevoArchivo.setNombreArchivo(archivo.getOriginalFilename());
         archivoDAO.save(nuevoArchivo);
     }
 
@@ -49,11 +63,96 @@ public class ArchivoService {
         }
         Archivo registroArchivo = maybeArchivo.get();
         try {
-            String rutaArchivo = registroArchivo.getPath();
+            String rutaArchivo = registroArchivo.getPathCompleto();
             Resource archivo = fileHandlerUtil.downloadFileFrom(rutaArchivo);
             return archivo;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void reemplazarArchivo(MultipartFile archivo, Long idPaciente, String fechaString) {
+        String rutaArchivo="";
+        try {
+            rutaArchivo = fileHandlerUtil.saveFile(archivo, idPaciente, fechaString);
+        } catch (IOException exception) {
+            throw new UploadFailedException("Ocurrio un error al intentar guardar el archivo");
+        }
+        if(rutaArchivo == "") {
+            throw new UploadFailedException("Error al generar la ruta del archivo");
+        }
+
+    }
+
+    public void eliminarArchivo(Long idArchivo) {
+        Optional<Archivo> maybeArchivo = archivoDAO.findById(idArchivo);
+        if(maybeArchivo.isEmpty()) {
+            throw new NotFoundException("El archivo solicitado no existe");
+        }
+
+        try {
+            Archivo archivo = maybeArchivo.get();
+            if(fileHandlerUtil.eliminarArchivo(archivo.getPathCompleto())) {
+                archivoDAO.deleteById(idArchivo);
+            }
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Ocurrio un error al intentar eliminar el archivo");
+        }
+    }
+
+    public Page<Archivo> getArchivosPaciente(Long pacienteId, Integer numeroPagina, String orderBy, boolean ascendingOrder) {
+        Sort sortBy = Sort.by(orderBy);
+        if(ascendingOrder) {
+            sortBy.ascending();
+        } else {
+            sortBy.descending();
+        }
+
+        Pageable pageable = PageRequest.of(numeroPagina, 10, sortBy);
+
+        Page<Archivo> archivos = archivoDAO.findByPacienteId(pacienteId, pageable);
+
+        //return archivoDAO.getArchivosPaginadosPaciente(pacienteId, numeroPagina, orderBy, ascendingOrder);
+
+        return archivos;
+    }
+
+    public Page<Archivo> getArchivosTurno(Long turnoId, Integer numeroPagina, String orderBy, boolean ascendingOrder) {
+        Sort sortBy = Sort.by(orderBy);
+        if(ascendingOrder) {
+            sortBy.ascending();
+        } else {
+            sortBy.descending();
+        }
+
+        Pageable pageable = PageRequest.of(numeroPagina, 10, sortBy);
+
+        Turno turno = entityManager.getReference(Turno.class, turnoId);
+
+        Page<Archivo> archivos = archivoDAO.findByTurnos(turno, pageable);
+
+        return archivos;
+    }
+
+    public void asociarArchivoTurno(Long archivoId, Long turnoId) {
+        Optional<Archivo> maybeArchivo = archivoDAO.findById(archivoId);
+        Turno turno = entityManager.getReference(Turno.class, turnoId);
+        if(maybeArchivo.isEmpty()) {
+            throw new NotFoundException("El archivo que se esta intentando agregar no existe");
+        }
+        Archivo archivo = maybeArchivo.get();
+        archivo.getTurnos().add(turno);
+        archivoDAO.save(archivo);
+    }
+
+    public void desasociarArchivoTurno(Long archivoId, Long turnoId) {
+        Optional<Archivo> maybeArchivo = archivoDAO.findById(archivoId);
+        Turno turno = entityManager.getReference(Turno.class, turnoId);
+        if(maybeArchivo.isEmpty()) {
+            throw new NotFoundException("El archivo que se esta intentando agregar no existe");
+        }
+        Archivo archivo = maybeArchivo.get();
+        archivo.getTurnos().remove(turno);
+        archivoDAO.save(archivo);
     }
 }

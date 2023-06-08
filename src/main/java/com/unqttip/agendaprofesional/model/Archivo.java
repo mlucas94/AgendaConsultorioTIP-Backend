@@ -1,8 +1,12 @@
 package com.unqttip.agendaprofesional.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 @Entity
@@ -13,13 +17,17 @@ public class Archivo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String path;
 
-    @ManyToOne(fetch =FetchType.EAGER,cascade = CascadeType.ALL)
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate fechaCarga;
+
+    private String nombreArchivo;
+
+    @ManyToOne(fetch =FetchType.EAGER)
     @JoinColumn(name="paciente_id", referencedColumnName = "id")
     private Paciente paciente;
 
-    @ManyToMany(mappedBy = "archivos", fetch = FetchType.LAZY)
+    @ManyToMany( fetch = FetchType.LAZY)
     private Set<Turno> turnos;
 
     public Long getId() {
@@ -28,14 +36,6 @@ public class Archivo {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public Paciente getPaciente() {
@@ -52,5 +52,29 @@ public class Archivo {
 
     public void setTurnos(Set<Turno> turnos) {
         this.turnos = turnos;
+    }
+
+    public LocalDate getFechaCarga() {
+        return fechaCarga;
+    }
+
+    public void setFechaCarga(LocalDate fechaCarga) {
+        this.fechaCarga = fechaCarga;
+    }
+
+    public String getNombreArchivo() {
+        return nombreArchivo;
+    }
+
+    public void setNombreArchivo(String nombreArchivo) {
+        this.nombreArchivo = nombreArchivo;
+    }
+
+    @JsonIgnore
+    public String getPathCompleto() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String currentDate = fechaCarga.format(formatter);
+        String pathCompleto = currentDate + "\\" + this.paciente.getId() + "\\" + this.nombreArchivo;
+        return pathCompleto;
     }
 }

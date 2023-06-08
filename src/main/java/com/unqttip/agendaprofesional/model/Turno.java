@@ -26,10 +26,10 @@ public class Turno {
     @JoinColumn(name="paciente_id", referencedColumnName = "id")
     private Paciente paciente;
 
-    @ManyToMany(fetch =FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinTable(name="archivo_turno",
+    @ManyToMany(mappedBy = "turnos", fetch =FetchType.EAGER,cascade = CascadeType.ALL)
+    /*@JoinTable(name="archivo_turno",
             joinColumns = @JoinColumn(name="archivo_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name="turno_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name="turno_id", referencedColumnName = "id"))*/
     private Set<Archivo> archivos;
 
     public Set<Archivo> getArchivos() {
