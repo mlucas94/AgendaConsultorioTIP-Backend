@@ -100,7 +100,7 @@ public class ArchivoService {
         }
     }
 
-    public Page<Archivo> getArchivosPaciente(Long pacienteId, Integer numeroPagina, String orderBy, boolean ascendingOrder) {
+    public List<Archivo> getArchivosPaciente(Long pacienteId, Integer numeroPagina, String orderBy, boolean ascendingOrder) {
         Sort sortBy = Sort.by(orderBy);
         if(ascendingOrder) {
             sortBy.ascending();
@@ -108,13 +108,13 @@ public class ArchivoService {
             sortBy.descending();
         }
 
-        Pageable pageable = PageRequest.of(numeroPagina, 10, sortBy);
+        Pageable pageable = PageRequest.of(numeroPagina, 5, sortBy);
 
         Page<Archivo> archivos = archivoDAO.findByPacienteId(pacienteId, pageable);
 
         //return archivoDAO.getArchivosPaginadosPaciente(pacienteId, numeroPagina, orderBy, ascendingOrder);
 
-        return archivos;
+        return archivos.getContent();
     }
 
     public Page<Archivo> getArchivosTurno(Long turnoId, Integer numeroPagina, String orderBy, boolean ascendingOrder) {

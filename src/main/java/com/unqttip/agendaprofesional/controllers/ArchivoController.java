@@ -46,13 +46,14 @@ public class ArchivoController {
     }
 
     @DeleteMapping("archivo/eliminar")
+    @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.PUT,RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE})
     public void eliminarArchivo(@RequestParam Long idArchivo) {
         archivoService.eliminarArchivo(idArchivo);
     }
 
     @GetMapping("/archivos/paciente")
-    public ResponseEntity<Page<Archivo>> getArchivosPaciente(@RequestParam Long pacienteId, @RequestParam Integer numeroPagina, @RequestParam String orderBy, @RequestParam boolean ascendingOrder) {
-        Page<Archivo> archivos = archivoService.getArchivosPaciente(pacienteId, numeroPagina, orderBy, ascendingOrder);
+    public ResponseEntity<List<Archivo>> getArchivosPaciente(@RequestParam Long pacienteId, @RequestParam Integer numeroPagina, @RequestParam String orderBy, @RequestParam boolean ascendingOrder) {
+        List<Archivo> archivos = archivoService.getArchivosPaciente(pacienteId, numeroPagina, orderBy, ascendingOrder);
         return ResponseEntity.ok().body(archivos);
     }
 
