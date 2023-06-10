@@ -69,6 +69,7 @@ public class ArchivoController {
     }
 
     @DeleteMapping("/archivo/turno")
+    @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.PUT,RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE})
     public void desasociarArchivoTurno(@RequestParam Long archivoId, @RequestParam Long turnoId) {
         archivoService.desasociarArchivoTurno(archivoId, turnoId);
     }
