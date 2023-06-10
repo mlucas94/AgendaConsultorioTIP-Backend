@@ -1,11 +1,13 @@
 package com.unqttip.agendaprofesional.services;
 
+import com.unqttip.agendaprofesional.dtos.ArchivosPaginaDTO;
 import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import com.unqttip.agendaprofesional.exceptions.UploadFailedException;
 import com.unqttip.agendaprofesional.model.Archivo;
 import com.unqttip.agendaprofesional.model.Paciente;
 import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.repositories.ArchivoDAO;
+import com.unqttip.agendaprofesional.repositories.TurnoDAO;
 import com.unqttip.agendaprofesional.utils.FileHandlerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,13 +18,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.core.io.Resource;
+
+import javax.mail.Multipart;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ArchivoService {
@@ -31,11 +39,14 @@ public class ArchivoService {
     private ArchivoDAO archivoDAO;
 
     @Autowired
+    private TurnoDAO turnoDAO;
+
+    @Autowired
     private EntityManager entityManager;
 
     private FileHandlerUtil fileHandlerUtil= new FileHandlerUtil();
 
-    public void guardarArchivo(MultipartFile archivo, Long idPaciente) {
+    public Long guardarArchivo(MultipartFile archivo, Long idPaciente) {
         String rutaArchivo="";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate fechaActual = LocalDate.now();
@@ -53,7 +64,21 @@ public class ArchivoService {
         nuevoArchivo.setPaciente(entityManager.getReference(Paciente.class, idPaciente));
         nuevoArchivo.setFechaCarga(fechaActual);
         nuevoArchivo.setNombreArchivo(archivo.getOriginalFilename());
-        archivoDAO.save(nuevoArchivo);
+        return archivoDAO.save(nuevoArchivo).getId();
+    }
+
+    public void guardarArchivoTurno(MultipartFile archivo, Long idTurno) {
+        Turno turnoDelArchivo = entityManager.getReference(Turno.class, idTurno);
+        Paciente pacienteArchivo = null;
+        try{
+            pacienteArchivo = turnoDelArchivo.getPaciente();
+        } catch (RuntimeException e) {
+            throw new NotFoundException("No se encontro el turno para asociar");
+        }
+        Long idArchivo = guardarArchivo(archivo, pacienteArchivo.getId());
+        //El entityManager antes trajo una referencia sin la lista de turnos. Si no se limpia aca, se reusa y salta un error.
+        entityManager.clear();
+        asociarArchivoTurno(idArchivo, idTurno);
     }
 
     public Resource descargarArchivo(Long idArchivo) {
@@ -100,7 +125,7 @@ public class ArchivoService {
         }
     }
 
-    public List<Archivo> getArchivosPaciente(Long pacienteId, Integer numeroPagina, String orderBy, boolean ascendingOrder) {
+    public ArchivosPaginaDTO getArchivosPaciente(Long pacienteId, Integer numeroPagina, String orderBy, boolean ascendingOrder) {
         Sort sortBy = Sort.by(orderBy);
         if(ascendingOrder) {
             sortBy.ascending();
@@ -112,9 +137,15 @@ public class ArchivoService {
 
         Page<Archivo> archivos = archivoDAO.findByPacienteId(pacienteId, pageable);
 
+        ArchivosPaginaDTO result = new ArchivosPaginaDTO();
+        result.setArchivos(archivos.getContent());
+        result.setPrimera(archivos.isFirst());
+        result.setUltima(archivos.isLast());
+        result.setCantidadPaginas(archivos.getTotalPages());
+
         //return archivoDAO.getArchivosPaginadosPaciente(pacienteId, numeroPagina, orderBy, ascendingOrder);
 
-        return archivos.getContent();
+        return result;
     }
 
     public Page<Archivo> getArchivosTurno(Long turnoId, Integer numeroPagina, String orderBy, boolean ascendingOrder) {
@@ -125,7 +156,7 @@ public class ArchivoService {
             sortBy.descending();
         }
 
-        Pageable pageable = PageRequest.of(numeroPagina, 10, sortBy);
+        Pageable pageable = PageRequest.of(numeroPagina, 5, sortBy);
 
         Turno turno = entityManager.getReference(Turno.class, turnoId);
 

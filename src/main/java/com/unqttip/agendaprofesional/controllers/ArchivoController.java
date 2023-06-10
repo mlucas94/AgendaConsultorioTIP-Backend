@@ -1,5 +1,6 @@
 package com.unqttip.agendaprofesional.controllers;
 
+import com.unqttip.agendaprofesional.dtos.ArchivosPaginaDTO;
 import com.unqttip.agendaprofesional.model.Archivo;
 import com.unqttip.agendaprofesional.services.ArchivoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,11 @@ public class ArchivoController {
             archivoService.guardarArchivo(archivo, idPaciente);
     }
 
+    @PostMapping("/archivo/cargar/turno")
+    public void cargarArchivoTurno(@RequestParam MultipartFile archivo, @RequestParam Long idTurno) {
+        archivoService.guardarArchivoTurno(archivo, idTurno);
+    }
+
     @GetMapping("/archivo/descargar")
     public ResponseEntity<Resource> descargarArchivo(@RequestParam Long idArchivo) {
         Resource archivo = archivoService.descargarArchivo(idArchivo);
@@ -52,8 +58,8 @@ public class ArchivoController {
     }
 
     @GetMapping("/archivos/paciente")
-    public ResponseEntity<List<Archivo>> getArchivosPaciente(@RequestParam Long pacienteId, @RequestParam Integer numeroPagina, @RequestParam String orderBy, @RequestParam boolean ascendingOrder) {
-        List<Archivo> archivos = archivoService.getArchivosPaciente(pacienteId, numeroPagina, orderBy, ascendingOrder);
+    public ResponseEntity<ArchivosPaginaDTO> getArchivosPaciente(@RequestParam Long pacienteId, @RequestParam Integer numeroPagina, @RequestParam String orderBy, @RequestParam boolean ascendingOrder) {
+        ArchivosPaginaDTO archivos = archivoService.getArchivosPaciente(pacienteId, numeroPagina, orderBy, ascendingOrder);
         return ResponseEntity.ok().body(archivos);
     }
 
@@ -72,10 +78,5 @@ public class ArchivoController {
         Page<Archivo> archivos = archivoService.getArchivosTurno(turnoId, numeroPagina, orderBy, ascendingOrder);
         return ResponseEntity.ok().body(archivos);
     }
-
-    /*
-    @PutMapping("reemplazar_archivo")
-    @DeleteMapping("borrar_archivo")
-     */
 
 }

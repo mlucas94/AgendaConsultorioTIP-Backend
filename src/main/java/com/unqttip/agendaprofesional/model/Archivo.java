@@ -27,7 +27,8 @@ public class Archivo {
     @JoinColumn(name="paciente_id", referencedColumnName = "id")
     private Paciente paciente;
 
-    @ManyToMany( fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToMany( fetch = FetchType.LAZY )
     private Set<Turno> turnos;
 
     public Long getId() {
@@ -76,5 +77,9 @@ public class Archivo {
         String currentDate = fechaCarga.format(formatter);
         String pathCompleto = currentDate + "\\" + this.paciente.getId() + "\\" + this.nombreArchivo;
         return pathCompleto;
+    }
+
+    public void agregarTurno(Turno turno) {
+        this.turnos.add(turno);
     }
 }
