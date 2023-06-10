@@ -74,8 +74,8 @@ public class ArchivoController {
     }
 
     @GetMapping("/archivos/turno")
-    public ResponseEntity<Page<Archivo>> getArchivosTurno(@RequestParam Long turnoId, @RequestParam Integer numeroPagina, @RequestParam String orderBy, @RequestParam boolean ascendingOrder) {
-        Page<Archivo> archivos = archivoService.getArchivosTurno(turnoId, numeroPagina, orderBy, ascendingOrder);
+    public ResponseEntity<ArchivosPaginaDTO> getArchivosTurno(@RequestParam Long turnoId, @RequestParam Integer numeroPagina, @RequestParam String orderBy, @RequestParam boolean ascendingOrder) {
+        ArchivosPaginaDTO archivos = archivoService.getArchivosTurno(turnoId, numeroPagina, orderBy, ascendingOrder);
         return ResponseEntity.ok().body(archivos);
     }
 

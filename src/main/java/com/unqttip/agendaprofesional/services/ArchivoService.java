@@ -148,7 +148,7 @@ public class ArchivoService {
         return result;
     }
 
-    public Page<Archivo> getArchivosTurno(Long turnoId, Integer numeroPagina, String orderBy, boolean ascendingOrder) {
+    public ArchivosPaginaDTO getArchivosTurno(Long turnoId, Integer numeroPagina, String orderBy, boolean ascendingOrder) {
         Sort sortBy = Sort.by(orderBy);
         if(ascendingOrder) {
             sortBy.ascending();
@@ -162,7 +162,13 @@ public class ArchivoService {
 
         Page<Archivo> archivos = archivoDAO.findByTurnos(turno, pageable);
 
-        return archivos;
+        ArchivosPaginaDTO result = new ArchivosPaginaDTO();
+        result.setArchivos(archivos.getContent());
+        result.setPrimera(archivos.isFirst());
+        result.setUltima(archivos.isLast());
+        result.setCantidadPaginas(archivos.getTotalPages());
+
+        return result;
     }
 
     public void asociarArchivoTurno(Long archivoId, Long turnoId) {
