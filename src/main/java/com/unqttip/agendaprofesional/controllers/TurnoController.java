@@ -3,7 +3,6 @@ package com.unqttip.agendaprofesional.controllers;
 import com.unqttip.agendaprofesional.dtos.ConsultaTurnosDisponiblesDTO;
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import com.unqttip.agendaprofesional.dtos.RangoDeTurnoDTO;
-import com.unqttip.agendaprofesional.model.RangoDeTurno;
 import com.unqttip.agendaprofesional.model.TipoDeTurno;
 import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.services.TurnoService;
@@ -25,25 +24,21 @@ public class TurnoController {
     private TurnoService turnoService;
 
     @GetMapping("/turnos/{id}")
-    @CrossOrigin(origins = "http://localhost:3000/", methods = {RequestMethod.PUT,RequestMethod.GET,RequestMethod.POST, RequestMethod.DELETE})
     public ResponseEntity<Turno> recuperarTurno(@PathVariable Long id) {
         return ResponseEntity.ok(turnoService.recuperarTurno(id));
     }
 
     @GetMapping("/turnos")
-    @CrossOrigin(origins = "http://localhost:3000/", methods = {RequestMethod.PUT,RequestMethod.GET,RequestMethod.POST, RequestMethod.DELETE})
     public ResponseEntity<List<Turno>> recuperarTurnos() {
         return ResponseEntity.ok(turnoService.recuperarTurnos());
     }
 
     @PostMapping("/turnos")
-    @CrossOrigin(origins = "http://localhost:3000/", methods = {RequestMethod.PUT,RequestMethod.GET,RequestMethod.POST, RequestMethod.DELETE})
     public void crearTurno(@RequestBody NuevoTurnoDTO turnoDTO) {
         this.turnoService.guardarTurno(turnoDTO);
     }
 
     @GetMapping("/turnos/horarios-disponibles")
-    @CrossOrigin(origins = "http://localhost:3000/", methods = {RequestMethod.PUT,RequestMethod.GET,RequestMethod.POST, RequestMethod.DELETE})
     public ResponseEntity<List<RangoDeTurnoDTO>> recuperarHorariosDisponibles(@RequestParam String fechaConsultada, @RequestParam String tipoDeTurno) {
         ConsultaTurnosDisponiblesDTO consultaTurnosDisponiblesDTO = new ConsultaTurnosDisponiblesDTO();
         consultaTurnosDisponiblesDTO.setFechaConsultada(fechaConsultada);
