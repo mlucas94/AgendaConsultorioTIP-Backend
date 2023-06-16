@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface PacienteDAO extends JpaRepository<Paciente, Long> {
     Optional<Paciente> findByDni(Long dni);
 
-    @Query(value = "select * from pacientes p where dni like %:dniONombre% or nombre like %:dniONombre% order by dni", nativeQuery = true)
+    @Query(value = "select * from pacientes p where dni like %:dniONombre% or nombre like %:dniONombre% order by dni limit 5", nativeQuery = true)
     List<Paciente> findByDniLikeOrNombreLikeOrderedByDni(@Param("dniONombre")String dniONombre);
 }

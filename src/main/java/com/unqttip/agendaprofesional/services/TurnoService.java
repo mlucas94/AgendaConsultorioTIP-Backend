@@ -13,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -146,4 +149,25 @@ public class TurnoService {
     private List<RangoDeTurnoDTO> deListaDeModeloAListaDeDTO(List<RangoDeTurno> rangoDeTurnos) {
         return rangoDeTurnos.stream().map(RangoDeTurno::fromModelObject).collect(Collectors.toList());
     }
+
+    public List<Turno> recuperarTurnosDia(String fecha) {
+        return turnoDAO.findAllByHorarioInicio(fecha);
+    }
+
+    public Integer cantidadDeTurnosTotalEnDia(String fecha) {
+        return turnoDAO.countTurnosDelDia(fecha);
+    }
+
+    public Integer cantidadDeTurnosPrioritariosTotalEnDia(String fecha) {
+        return turnoDAO.countTurnosPrioritariosDelDia(fecha);
+    }
+
+    public List<String> getDiasConPrioritarios(String fecha) {
+        List<Turno> diasConPrioritarios = turnoDAO.selectHoraInicioWhereMonth(fecha);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        List<String> result = diasConPrioritarios.stream().map(diaConPrioritarios -> diaConPrioritarios.getHorarioInicio().format(formatter).toString())
+                .collect(Collectors.toList());
+        return result;
+    }
+
 }
