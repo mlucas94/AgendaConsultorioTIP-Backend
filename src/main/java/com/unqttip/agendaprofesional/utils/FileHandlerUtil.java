@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import com.unqttip.agendaprofesional.exceptions.FileAlreadyUploadedException;
 import com.unqttip.agendaprofesional.model.Archivo;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -29,6 +30,8 @@ public class FileHandlerUtil {
             Path filePath = Paths.get(pathToFile);
             if (!Files.exists(filePath)) {
                 Files.createDirectories(filePath);
+            } else {
+                throw new FileAlreadyUploadedException("Ya existe el archivo.");
             }
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ioe) {

@@ -1,6 +1,7 @@
 package com.unqttip.agendaprofesional.services;
 
 import com.unqttip.agendaprofesional.dtos.ArchivosPaginaDTO;
+import com.unqttip.agendaprofesional.exceptions.FileAlreadyUploadedException;
 import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import com.unqttip.agendaprofesional.exceptions.UploadFailedException;
 import com.unqttip.agendaprofesional.model.Archivo;
@@ -19,18 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.core.io.Resource;
 
-import javax.mail.Multipart;
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class ArchivoService {
@@ -54,7 +48,10 @@ public class ArchivoService {
         try {
             rutaArchivo = fileHandlerUtil.saveFile(archivo, idPaciente, fechaActualString);
         } catch (IOException exception) {
-            throw new UploadFailedException("Ocurrio un error al intentar guardar el archivo");
+            throw new UploadFailedException("Ocurrio un error al intentar guardar el archivo. Vuelva a intentar en unos minutos");
+        } catch (FileAlreadyUploadedException exception) {
+            //En caso de catchear este error, preguntar en el front si desea reemplazar el archivo o cancelar la carga.
+            throw new UploadFailedException("El archivo que intento cargar ya se encuentra en el historial del paciente.");
         }
         if(rutaArchivo == "") {
             throw new UploadFailedException("Error al generar la ruta del archivo");
@@ -75,9 +72,15 @@ public class ArchivoService {
         } catch (RuntimeException e) {
             throw new NotFoundException("No se encontro el turno para asociar");
         }
-        Long idArchivo = guardarArchivo(archivo, pacienteArchivo.getId());
+        Long idArchivo = null;
+        try {
+            idArchivo = guardarArchivo(archivo, pacienteArchivo.getId());
+        } catch(UploadFailedException exception) {
+            throw exception;
+        }
         //El entityManager antes trajo una referencia sin la lista de turnos. Si no se limpia aca, se reusa y salta un error.
         entityManager.clear();
+        //aca chequear que guardar me haya devuelto el id. Si no lo devuelve arrojar una excepcion y en front avisar que ya existe, y si quiere asociarlo
         asociarArchivoTurno(idArchivo, idTurno);
     }
 
