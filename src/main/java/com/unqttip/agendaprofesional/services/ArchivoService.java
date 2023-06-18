@@ -146,8 +146,6 @@ public class ArchivoService {
         result.setUltima(archivos.isLast());
         result.setCantidadPaginas(archivos.getTotalPages());
 
-        //return archivoDAO.getArchivosPaginadosPaciente(pacienteId, numeroPagina, orderBy, ascendingOrder);
-
         return result;
     }
 
