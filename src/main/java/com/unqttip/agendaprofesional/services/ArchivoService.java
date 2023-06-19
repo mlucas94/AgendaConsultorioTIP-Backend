@@ -136,7 +136,7 @@ public class ArchivoService {
             sortBy.descending();
         }
 
-        Pageable pageable = PageRequest.of(numeroPagina, 5, sortBy);
+        Pageable pageable = PageRequest.of(numeroPagina, 10, sortBy);
 
         Page<Archivo> archivos = archivoDAO.findByPacienteId(pacienteId, pageable);
 
@@ -157,7 +157,7 @@ public class ArchivoService {
             sortBy.descending();
         }
 
-        Pageable pageable = PageRequest.of(numeroPagina, 5, sortBy);
+        Pageable pageable = PageRequest.of(numeroPagina, 10, sortBy);
 
         Turno turno = entityManager.getReference(Turno.class, turnoId);
 
