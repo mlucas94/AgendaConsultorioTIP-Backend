@@ -30,6 +30,10 @@ public class Paciente {
     private String plan;
 
     @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="paciente")
+    private List<Archivo> archivos;
+
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="paciente") //TODO: agregar (mappedBy="paciente") después de modificar turno
     private List<Turno> turnos;
 

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -24,6 +25,20 @@ public class Turno {
     @ManyToOne(fetch =FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name="paciente_id", referencedColumnName = "id")
     private Paciente paciente;
+
+    @ManyToMany(mappedBy = "turnos", fetch =FetchType.EAGER,cascade = CascadeType.ALL)
+    /*@JoinTable(name="archivo_turno",
+            joinColumns = @JoinColumn(name="archivo_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name="turno_id", referencedColumnName = "id"))*/
+    private Set<Archivo> archivos;
+
+    public Set<Archivo> getArchivos() {
+        return archivos;
+    }
+
+    public void setArchivos(Set<Archivo> archivos) {
+        this.archivos = archivos;
+    }
 
     public Long getId() {
         return id;
