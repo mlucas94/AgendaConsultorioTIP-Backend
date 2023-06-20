@@ -3,7 +3,6 @@ package com.unqttip.agendaprofesional.controllers;
 import com.unqttip.agendaprofesional.dtos.ConsultaTurnosDisponiblesDTO;
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import com.unqttip.agendaprofesional.dtos.RangoDeTurnoDTO;
-import com.unqttip.agendaprofesional.model.RangoDeTurno;
 import com.unqttip.agendaprofesional.model.TipoDeTurno;
 import com.unqttip.agendaprofesional.model.Turno;
 import com.unqttip.agendaprofesional.services.TurnoService;
