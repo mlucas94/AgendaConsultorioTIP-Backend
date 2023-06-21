@@ -26,7 +26,7 @@ public class ProfesionalController {
     }
 
     @PostMapping("/profesional/registrarse")
-    public void registrarNuevoProfesional(@RequestBody NuevoProfesionalDTO nuevoProfesionalDTO) {
+    public void registrarNuevoProfesional(@RequestBody @Valid NuevoProfesionalDTO nuevoProfesionalDTO) {
         this.profesionalService.registrar(nuevoProfesionalDTO);
     }
 }
