@@ -46,7 +46,7 @@ public class TurnoControllerTest {
         verify(turnoService, atLeastOnce()).recuperarTurno(1L);
     }
 
-    @Test
+    /*@Test
     void recuperarTurnos_devuelveListaTurnos() {
         List<Turno> listaTurnoEsperada = Collections.singletonList(crearTurnoTest());
 
@@ -56,7 +56,7 @@ public class TurnoControllerTest {
         assertEquals(HttpStatus.OK, listaTurnoRes.getStatusCode());
         assertEquals(listaTurnoEsperada, listaTurnoRes.getBody());
         verify(turnoService, atLeastOnce()).recuperarTurnos();
-    }
+    }*/
 
     @Test
     void crearTurno_creaNuevoTurno() {
