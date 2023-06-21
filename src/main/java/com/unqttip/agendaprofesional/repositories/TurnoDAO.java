@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TurnoDAO extends JpaRepository<Turno, Long> {
@@ -39,4 +40,6 @@ public interface TurnoDAO extends JpaRepository<Turno, Long> {
     @Query(value="select * from turnos where month(horario_inicio) = month(:fecha) and tipo in (2)", nativeQuery = true)
     List<Turno> selectHoraInicioWhereMonth(@Param("fecha") String fecha);
 
+    @Query(value="select * from turnos where horario_inicio > current_date AND paciente_id = :idPaciente  ORDER BY horario_inicio ASC LIMIT 1", nativeQuery = true)
+    Turno proximoTurnoPaciente(@Param("idPaciente") Long id);
 }

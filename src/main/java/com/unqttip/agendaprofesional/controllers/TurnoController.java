@@ -66,4 +66,15 @@ public class TurnoController {
         List<String> diasConPrioritarios = turnoService.getDiasConPrioritarios(fechaConsultada);
         return ResponseEntity.ok(diasConPrioritarios);
     }
+
+    @GetMapping("proximo_turno/{id}")
+    public ResponseEntity<Turno> proximoTurnoPaciente(@PathVariable Long id) {
+        Turno result = turnoService.recuperarProximoTurnoPaciente(id);
+        if(result != null){
+            return ResponseEntity.ok(result);
+        }
+        result = null;
+        return ResponseEntity.ok(result);
+
+    }
 }

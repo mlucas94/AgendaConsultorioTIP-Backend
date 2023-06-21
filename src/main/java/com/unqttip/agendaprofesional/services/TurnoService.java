@@ -170,4 +170,9 @@ public class TurnoService {
         return result;
     }
 
+    public Turno recuperarProximoTurnoPaciente(Long id) {
+        Turno turno = turnoDAO.proximoTurnoPaciente(id);
+        //Turno turno = turnoMaybe.get();
+        return turno;
+    }
 }
