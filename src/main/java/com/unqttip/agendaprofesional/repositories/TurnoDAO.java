@@ -1,6 +1,7 @@
 package com.unqttip.agendaprofesional.repositories;
 
 import com.unqttip.agendaprofesional.model.Turno;
+import com.unqttip.agendaprofesional.services.TurnoService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,4 +43,13 @@ public interface TurnoDAO extends JpaRepository<Turno, Long> {
 
     @Query(value="select * from turnos where horario_inicio > current_date AND paciente_id = :idPaciente  ORDER BY horario_inicio ASC LIMIT 1", nativeQuery = true)
     Turno proximoTurnoPaciente(@Param("idPaciente") Long id);
+
+    @Query(value="select count(id) from turnos where DATE(horario_inicio) = CURRENT_DATE", nativeQuery = true)
+    Integer countTurnosHoy();
+
+    @Query(value="select * from turnos where horario_inicio > NOW() order by horario_inicio ASC LIMIT 10", nativeQuery = true)
+    List<Turno> findProximosTurnos();
+
+    @Query(value="select * from turnos where horario_inicio > current_date AND tipo in (2)  ORDER BY horario_inicio ASC LIMIT 1", nativeQuery = true)
+    Optional<Turno> proximoPrioritario();
 }

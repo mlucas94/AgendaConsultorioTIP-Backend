@@ -1,6 +1,7 @@
 package com.unqttip.agendaprofesional.controllers;
 
 import com.unqttip.agendaprofesional.dtos.ConsultaTurnosDisponiblesDTO;
+import com.unqttip.agendaprofesional.dtos.LandingDTO;
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import com.unqttip.agendaprofesional.dtos.RangoDeTurnoDTO;
 import com.unqttip.agendaprofesional.model.TipoDeTurno;
@@ -76,5 +77,11 @@ public class TurnoController {
         result = null;
         return ResponseEntity.ok(result);
 
+    }
+
+    @GetMapping("/landing")
+    public ResponseEntity<LandingDTO> getLanding() {
+        LandingDTO result = turnoService.getLanding();
+        return ResponseEntity.ok(result);
     }
 }

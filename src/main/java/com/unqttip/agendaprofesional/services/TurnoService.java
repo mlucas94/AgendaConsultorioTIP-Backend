@@ -1,5 +1,6 @@
 package com.unqttip.agendaprofesional.services;
 
+import com.unqttip.agendaprofesional.dtos.LandingDTO;
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import com.unqttip.agendaprofesional.dtos.RangoDeTurnoDTO;
 import com.unqttip.agendaprofesional.model.RangoDeTurno;
@@ -174,5 +175,18 @@ public class TurnoService {
         Turno turno = turnoDAO.proximoTurnoPaciente(id);
         //Turno turno = turnoMaybe.get();
         return turno;
+    }
+
+    public LandingDTO getLanding() {
+        LandingDTO result = new LandingDTO();
+        List<Turno> proximosTurnos = turnoDAO.findProximosTurnos() ;
+        result.setProximosTurnos(proximosTurnos);
+        Integer cantTurnosHoy = turnoDAO.countTurnosHoy();
+        result.setCantidadTurnosDia(cantTurnosHoy);
+        Optional<Turno> maybeTurnoPrioritario = turnoDAO.proximoPrioritario();
+        if(maybeTurnoPrioritario.isPresent()) {
+            result.setProximoTurnoPrioritario(maybeTurnoPrioritario.get());
+        }
+        return result;
     }
 }
