@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -60,12 +58,12 @@ public class TurnoService {
             throw new NotFoundException("El usuario " + turnoDto.getPaciente() + " no existe.");
         }
         Turno nuevoTurno = turnoDto.turnoFromDTO(entityManager);
-        validarTurno(nuevoTurno);
+        validarNuevoTurno(nuevoTurno);
         turnoDAO.save(nuevoTurno);
         emailService.enviarMailNuevoTurno(nuevoTurno);
     }
 
-    private void validarTurno(Turno turno) {
+    private void validarNuevoTurno(Turno turno) {
         if (turno.getHorarioFin().isBefore(turno.getHorarioInicio())) {
             throw new BadRequestException("Un turno no puede tener una hora final previa a la hora de inicio.");
         }
