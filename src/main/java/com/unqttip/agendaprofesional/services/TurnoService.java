@@ -2,6 +2,7 @@ package com.unqttip.agendaprofesional.services;
 
 import com.unqttip.agendaprofesional.dtos.NuevoTurnoDTO;
 import com.unqttip.agendaprofesional.dtos.RangoDeTurnoDTO;
+import com.unqttip.agendaprofesional.model.EstadoDeTurno;
 import com.unqttip.agendaprofesional.model.RangoDeTurno;
 import com.unqttip.agendaprofesional.exceptions.BadRequestException;
 import com.unqttip.agendaprofesional.exceptions.NotFoundException;
@@ -61,6 +62,17 @@ public class TurnoService {
         validarNuevoTurno(nuevoTurno);
         turnoDAO.save(nuevoTurno);
         emailService.enviarMailNuevoTurno(nuevoTurno);
+    }
+
+    public void cancelarTurno(Long idTurno) {
+        Optional<Turno> maybeTurno = turnoDAO.findById(idTurno);
+        if (maybeTurno.isEmpty()) {
+            throw new NotFoundException("El turno " + idTurno + " no ha sido encontrado");
+        }
+        Turno turno = maybeTurno.get();
+        turno.setEstado(EstadoDeTurno.CANCELADO);
+        turnoDAO.save(turno);
+        emailService.enviarMailTurnoCancelado(turno);
     }
 
     private void validarNuevoTurno(Turno turno) {
