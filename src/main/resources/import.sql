@@ -1,8 +1,8 @@
-INSERT INTO pacientes (id, dni, nombre, telefono, edad, email) VALUES (1, 100, 'Alberto Arana', '1234', '23', 'albertoa@mail.com');
-INSERT INTO pacientes (id, dni, nombre, telefono, edad, email) VALUES (2, 101, 'Bruno Branca', '1234', '32', 'brunob@mail.com');
-INSERT INTO pacientes (id, dni, nombre, telefono, edad, email) VALUES (3, 102, 'Camila Castro', '1234', '19', 'camicas@mail.com');
-INSERT INTO pacientes (id, dni, nombre, telefono, edad, email) VALUES (4, 103, 'Domingo Dominguez', '1234', '30', 'domingod@mail.com');
-INSERT INTO pacientes (id, dni, nombre, telefono, edad, email) VALUES (5, 104, 'Facundo Festa', '1234', '40', 'festaf@mail.com');
+INSERT INTO pacientes (id, dni, nombre, telefono, edad, email) VALUES (1, 100, 'Alberto Arana', '1234', '23', 'nahueliglesias1999@gmail.com');
+INSERT INTO pacientes (id, dni, nombre, telefono, edad, email) VALUES (2, 101, 'Bruno Branca', '1234', '32', 'nahueliglesias1999@gmail.com');
+INSERT INTO pacientes (id, dni, nombre, telefono, edad, email) VALUES (3, 102, 'Camila Castro', '1234', '19', 'nahueliglesias1999@gmail.com');
+INSERT INTO pacientes (id, dni, nombre, telefono, edad, email) VALUES (4, 103, 'Domingo Dominguez', '1234', '30', 'nahueliglesias1999@gmail.com');
+INSERT INTO pacientes (id, dni, nombre, telefono, edad, email) VALUES (5, 104, 'Facundo Festa', '1234', '40', 'nahueliglesias1999@gmail.com');
 
 
 INSERT INTO turnos (id, horario_inicio, horario_fin, paciente_id, tipo, estado) VALUES (4, '2023-03-09 10:00:00', '2023-03-09 10:30:00', 4, 0, 0);
