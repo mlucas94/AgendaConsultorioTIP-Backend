@@ -38,6 +38,11 @@ public class TurnoController {
         this.turnoService.guardarTurno(turnoDTO);
     }
 
+    @PostMapping("/turnos/cancelar/{id}")
+    public void cancelarTurno(@PathVariable Long id) {
+        this.turnoService.cancelarTurno(id);
+    }
+
     @GetMapping("/turnos/horarios-disponibles")
     public ResponseEntity<List<RangoDeTurnoDTO>> recuperarHorariosDisponibles(@RequestParam String fechaConsultada, @RequestParam String tipoDeTurno) {
         ConsultaTurnosDisponiblesDTO consultaTurnosDisponiblesDTO = new ConsultaTurnosDisponiblesDTO();
