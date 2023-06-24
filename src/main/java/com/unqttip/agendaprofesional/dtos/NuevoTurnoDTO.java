@@ -1,5 +1,6 @@
 package com.unqttip.agendaprofesional.dtos;
 
+import com.unqttip.agendaprofesional.model.EstadoDeTurno;
 import com.unqttip.agendaprofesional.model.Paciente;
 import com.unqttip.agendaprofesional.model.TipoDeTurno;
 import com.unqttip.agendaprofesional.model.Turno;
@@ -67,6 +68,7 @@ public class NuevoTurnoDTO {
         turno.setHorarioInicio(horarioInicio);
         turno.setHorarioFin(horarioFin);
         turno.setTipo(TipoDeTurno.valueOf(this.tipo.toUpperCase(Locale.ROOT)));
+        turno.setEstado(EstadoDeTurno.ACTIVO);
         Paciente pacienteTurno = entityManager.getReference(Paciente.class, this.paciente);
         turno.setPaciente(pacienteTurno);
         return turno;

@@ -32,6 +32,8 @@ public class Turno {
             inverseJoinColumns = @JoinColumn(name="turno_id", referencedColumnName = "id"))*/
     private Set<Archivo> archivos;
 
+    private EstadoDeTurno estado;
+
     public Set<Archivo> getArchivos() {
         return archivos;
     }
@@ -80,6 +82,14 @@ public class Turno {
         this.paciente = paciente;
     }
 
+    public EstadoDeTurno getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoDeTurno estado) {
+        this.estado = estado;
+    }
+
     public static TurnoBuilder builder() {
         return new TurnoBuilder();
     }
@@ -113,6 +123,16 @@ public class Turno {
 
         public TurnoBuilder paciente(Paciente paciente) {
             turno.setPaciente(paciente);
+            return this;
+        }
+
+        public TurnoBuilder archivos(Set<Archivo> archivos) {
+            turno.setArchivos(archivos);
+            return this;
+        }
+
+        public TurnoBuilder estado(EstadoDeTurno estado) {
+            turno.setEstado(estado);
             return this;
         }
 
