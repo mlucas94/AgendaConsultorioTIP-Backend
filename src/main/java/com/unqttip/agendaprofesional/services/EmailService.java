@@ -19,17 +19,22 @@ public class EmailService {
                 }
             });
 
-    private final String TEMPLATE_REGULAR = "<p>Hola, <b>%s</b>. </p>" +
+    private final String TEMPLATE_NUEVO_REGULAR = "<p>Hola, <b>%s</b>. </p>" +
             "<p>Le informamos que su turno ha sido registrado correctamente para el día <b>%s</b> desde las <b>%s hs</b> hasta las <b>%s hs</b>. <br>" +
             "Este es un mensaje automático, ante cualquier duda consulte con el profesional asignado. </p>" +
             "<p>¡Saludos! <i>agendate APP</i></p>";
-    private final String TEMPLATE_SOBRETURNO = "<p>Hola, <b>%s</b>. </p>" +
+    private final String TEMPLATE_NUEVO_SOBRETURNO = "<p>Hola, <b>%s</b>. </p>" +
             "<p>Le informamos que su sobreturno ha sido registrado correctamente para el día <b>%s</b> desde las <b>%s hs</b> hasta las <b>%s hs</b>. <br>" +
             "Recuerde que por ser un sobreturno es posible que deba esperar más allá de la hora asignada. <br>" +
             "Este es un mensaje automático, ante cualquier duda consulte con el profesional asignado. </p>" +
             "<p>¡Saludos! <i>agendate APP</i></p>";
-    private final String TEMPLATE_PRIORITARIO = "<p>Hola, <b>%s</b>. </p>" +
+    private final String TEMPLATE_NUEVO_PRIORITARIO = "<p>Hola, <b>%s</b>. </p>" +
             "<p>Le informamos que su turno ha sido registrado correctamente para el día <b>%s</b> desde las <b>%s hs</b> hasta las <b>%s hs</b>. <br>" +
+            "Este es un mensaje automático, ante cualquier duda consulte con el profesional asignado. </p>" +
+            "<p>¡Saludos! <i>agendate APP</i></p>";
+
+    private final String TEMPLATE_CANCELACION = "<p>Hola, <b>%s</b>. </p>" +
+            "<p>Le informamos que su turno del día <b>%s</b> desde las <b>%s hs</b> hasta las <b>%s hs</b> ha sido <i>cancelado</i>. <br>" +
             "Este es un mensaje automático, ante cualquier duda consulte con el profesional asignado. </p>" +
             "<p>¡Saludos! <i>agendate APP</i></p>";
 
@@ -41,11 +46,11 @@ public class EmailService {
 
         String cuerpoEmail = "";
         if (turno.getTipo() == TipoDeTurno.REGULAR) {
-            cuerpoEmail = TEMPLATE_REGULAR;
+            cuerpoEmail = TEMPLATE_NUEVO_REGULAR;
         } else if (turno.getTipo() == TipoDeTurno.SOBRETURNO) {
-            cuerpoEmail = TEMPLATE_SOBRETURNO;
+            cuerpoEmail = TEMPLATE_NUEVO_SOBRETURNO;
         } else if (turno.getTipo() == TipoDeTurno.PRIORITARIO) {
-            cuerpoEmail = TEMPLATE_PRIORITARIO;
+            cuerpoEmail = TEMPLATE_NUEVO_PRIORITARIO;
         }
         cuerpoEmail = String.format(
                 cuerpoEmail,
@@ -59,8 +64,39 @@ public class EmailService {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress("agendate.app.noreply@gmail.com"));
             message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse("nahueliglesias1999@gmail.com")); //TODO: turno.getPaciente().getEmail();
+                    InternetAddress.parse(turno.getPaciente().getEmail()));
             message.setSubject("agendate APP: nuevo turno asignado");
+            message.setContent(cuerpoEmail, "text/html");
+
+            Transport.send(message);
+
+            System.out.println("Correo electrónico enviado");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void enviarMailTurnoCancelado(Turno turno) {
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        String cuerpoEmail = TEMPLATE_CANCELACION;
+        cuerpoEmail = String.format(
+                cuerpoEmail,
+                turno.getPaciente().getNombre(),
+                turno.getHorarioInicio().toLocalDate().toString(),
+                turno.getHorarioInicio().toLocalTime().toString(),
+                turno.getHorarioFin().toLocalTime().toString()
+        );
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("agendate.app.noreply@gmail.com"));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(turno.getPaciente().getEmail()));
+            message.setSubject("agendate APP: turno cancelado");
             message.setContent(cuerpoEmail, "text/html");
 
             Transport.send(message);
