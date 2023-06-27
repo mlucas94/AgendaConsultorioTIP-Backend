@@ -10,6 +10,6 @@ INSERT INTO turnos (id, horario_inicio, horario_fin, paciente_id, tipo, estado) 
 INSERT INTO turnos (id, horario_inicio, horario_fin, paciente_id, tipo, estado) VALUES (6, '2023-04-09 07:00:00', '2023-04-09 07:30:00', 2, 1, 0);
 INSERT INTO turnos (id, horario_inicio, horario_fin, paciente_id, tipo, estado) VALUES (7, '2023-04-09 07:30:00', '2023-04-09 08:00:00', 1, 0, 0);
 INSERT INTO turnos (id, horario_inicio, horario_fin, paciente_id, tipo, estado) VALUES (8, '2023-04-09 09:00:00', '2023-04-09 09:30:00', 4, 1, 0);
-INSERT INTO turnos (id, horario_inicio, horario_fin, paciente_id, tipo, estado) VALUES (9, '2023-04-09 10:00:00', '2023-04-09 10:30:00', 5, 1, 0;
+INSERT INTO turnos (id, horario_inicio, horario_fin, paciente_id, tipo, estado) VALUES (9, '2023-04-09 10:00:00', '2023-04-09 10:30:00', 5, 1, 0);
 INSERT INTO turnos (id, horario_inicio, horario_fin, paciente_id, tipo, estado) VALUES (10, '2023-04-09 12:00:00', '2023-04-09 13:00:00', 3, 2, 0);
 
