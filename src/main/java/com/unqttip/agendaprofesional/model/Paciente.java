@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -34,8 +35,11 @@ public class Paciente {
     private List<Archivo> archivos;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="paciente") //TODO: agregar (mappedBy="paciente") después de modificar turno
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="paciente")
     private List<Turno> turnos;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "paciente")
+    private Set<Respuesta> respuestas;
 
     // Getters and setters
     public Long getId() {

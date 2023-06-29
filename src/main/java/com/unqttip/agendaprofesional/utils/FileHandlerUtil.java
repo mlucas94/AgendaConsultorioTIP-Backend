@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class FileHandlerUtil {
 
-    private static String localFileServerPath = "C:\\temp\\";
+    private static String localFileServerPath = "D:\\temp\\";
     public static String saveFile( MultipartFile multipartFile, Long idPaciente, String currentDate)
             throws IOException {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
