@@ -54,7 +54,7 @@ public class NuevaPreguntaDTO {
 
     public Pregunta preguntaFromDTO() {
         Pregunta pregunta = Pregunta.builder()
-                .pregunta_nombre(this.pregunta_nombre)
+                .preguntaNombre(this.pregunta_nombre)
                 .obligatoria(this.obligatoria)
                 .tipoDeRespuesta(TipoDeRespuesta.valueOf(this.tipoDeRespuesta.toUpperCase(Locale.ROOT)))
                 .opciones(this.opciones)

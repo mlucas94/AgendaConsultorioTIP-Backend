@@ -10,7 +10,7 @@ public class Pregunta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String pregunta_nombre;
+    private String preguntaNombre;
     private Boolean obligatoria;
     private TipoDeRespuesta tipoDeRespuesta;
     private String opciones;
@@ -26,12 +26,12 @@ public class Pregunta {
         this.id = id;
     }
 
-    public String getPregunta_nombre() {
-        return pregunta_nombre;
+    public String getPreguntaNombre() {
+        return preguntaNombre;
     }
 
-    public void setPregunta_nombre(String pregunta_nombre) {
-        this.pregunta_nombre = pregunta_nombre;
+    public void setPreguntaNombre(String preguntaNombre) {
+        this.preguntaNombre = preguntaNombre;
     }
 
     public Boolean getObligatoria() {
@@ -82,8 +82,8 @@ public class Pregunta {
             return this;
         }
 
-        public PreguntaBuilder pregunta_nombre(String pregunta_nombre) {
-            pregunta.setPregunta_nombre(pregunta_nombre);
+        public PreguntaBuilder preguntaNombre(String preguntaNombre) {
+            pregunta.setPreguntaNombre(preguntaNombre);
             return this;
         }
 
