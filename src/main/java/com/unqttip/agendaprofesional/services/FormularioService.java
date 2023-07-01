@@ -57,7 +57,8 @@ public class FormularioService {
 
     public List<Formulario> recuperarFormulariosRespondidos(Long idPaciente) {
         Set<Formulario> formularios = new HashSet<>();
-        List<Respuesta> respuestasPaciente = respuestaDAO.findByPacienteId(idPaciente);
+        List<Respuesta> respuestasPaciente = respuestaDAO.findAll()
+                .stream().filter(respuesta -> respuesta.getPaciente().getId().equals(idPaciente)).collect(Collectors.toList());
         respuestasPaciente.forEach(respuesta -> {
             formularios.add(respuesta.getPregunta().getFormulario());
         });
@@ -83,9 +84,13 @@ public class FormularioService {
     private List<PreguntaRespondidaDTO> generarPreguntasRespondidas(List<Pregunta> preguntas, Long idPaciente) {
         List<PreguntaRespondidaDTO> preguntasRespondidas = new ArrayList<>();
         preguntas.forEach(pregunta -> {
-            Optional<Respuesta> maybeRespuesta = respuestaDAO.findByPacienteAndPregunta(idPaciente, pregunta.getId());
-            if (maybeRespuesta.isPresent()) {
-                Respuesta respuesta = maybeRespuesta.get();
+            List<Respuesta> respuestaList = respuestaDAO.findAll();
+            respuestaList = respuestaList.stream().filter(
+                    respuesta1 -> respuesta1.getPregunta().getId().equals(pregunta.getId())
+                    || respuesta1.getPaciente().getId().equals(idPaciente)
+            ).collect(Collectors.toList());
+            if (!respuestaList.isEmpty()) {
+                Respuesta respuesta = respuestaList.get(0);
                 preguntasRespondidas.add(
                         PreguntaRespondidaDTO.builder()
                                 .nombre(pregunta.getPreguntaNombre())
