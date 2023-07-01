@@ -19,6 +19,11 @@ public class FormularioController {
         formularioService.guardarNuevoFormulario(nuevoFormularioDTO);
     }
 
+    @GetMapping("/formularios")
+    public void recuperarFormularios() {
+        formularioService.recuperarPlantillasFormulario();
+    }
+
     @PostMapping("/formularios/responder")
     public void agregarRespuestas(@RequestBody List<NuevaRespuestaDTO> nuevaRespuestaDTOList) {
         formularioService.guardarRespuestas(nuevaRespuestaDTOList);

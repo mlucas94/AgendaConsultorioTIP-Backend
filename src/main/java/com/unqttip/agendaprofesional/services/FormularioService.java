@@ -40,6 +40,10 @@ public class FormularioService {
         }
     }
 
+    public List<Formulario> recuperarPlantillasFormulario() {
+        return formularioDAO.findAll();
+    }
+
     public void guardarRespuestas(List<NuevaRespuestaDTO> nuevaRespuestaDTOList) {
         List<Respuesta> respuestaList = nuevaRespuestaDTOList.stream().map(this::respuestaDesdeDTO).collect(Collectors.toList());
 
