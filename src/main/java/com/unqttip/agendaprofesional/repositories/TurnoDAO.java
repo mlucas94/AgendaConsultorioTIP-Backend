@@ -1,7 +1,6 @@
 package com.unqttip.agendaprofesional.repositories;
 
 import com.unqttip.agendaprofesional.model.Turno;
-import com.unqttip.agendaprofesional.services.TurnoService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
