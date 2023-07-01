@@ -1,9 +1,8 @@
 package com.unqttip.agendaprofesional.controllers;
 
-import com.unqttip.agendaprofesional.dtos.FormularioCompletableDTO;
 import com.unqttip.agendaprofesional.dtos.NuevaRespuestaDTO;
-import com.unqttip.agendaprofesional.dtos.NuevoFormularioDTO;
 import com.unqttip.agendaprofesional.model.Formulario;
+import com.unqttip.agendaprofesional.model.FormularioString;
 import com.unqttip.agendaprofesional.services.FormularioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -18,13 +17,13 @@ public class FormularioController {
     private FormularioService formularioService;
 
     @PostMapping("/formularios/crear")
-    public void crearFormulario(@RequestBody NuevoFormularioDTO nuevoFormularioDTO) {
-        formularioService.guardarNuevoFormulario(nuevoFormularioDTO);
+    public void crearFormulario(@RequestBody String nuevoFormularioDTO) {
+        formularioService.guardarNuevoFormularioString(nuevoFormularioDTO);
     }
 
     @GetMapping("/formularios")
-    public List<FormularioCompletableDTO> recuperarFormularios() {
-        return formularioService.recuperarPlantillasFormulario();
+    public List<FormularioString> recuperarFormularios() {
+        return formularioService.recuperarPlantillasFormularioString();
     }
 
     @PostMapping("/formularios/responder")

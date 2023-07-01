@@ -5,6 +5,7 @@ import com.unqttip.agendaprofesional.exceptions.BadRequestException;
 import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import com.unqttip.agendaprofesional.model.*;
 import com.unqttip.agendaprofesional.repositories.FormularioDAO;
+import com.unqttip.agendaprofesional.repositories.FormularioStringDAO;
 import com.unqttip.agendaprofesional.repositories.PreguntaDAO;
 import com.unqttip.agendaprofesional.repositories.RespuestaDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class FormularioService {
     private RespuestaDAO respuestaDAO;
     @Autowired
     private PacienteService pacienteService;
+    @Autowired
+    private FormularioStringDAO formularioStringDAO;
 
     public void guardarNuevoFormulario(NuevoFormularioDTO nuevoFormularioDTO) {
         Formulario nuevoFormulario = nuevoFormularioDTO.formularioFromDTO();
@@ -33,6 +36,10 @@ public class FormularioService {
         formularioDAO.save(nuevoFormulario);
     }
 
+    public void guardarNuevoFormularioString(String formString) {
+        formularioStringDAO.save(FormularioString.builder().form(formString).build());
+    }
+
     private void validarPregunta(Pregunta pregunta) {
         if (pregunta.getTipoDeRespuesta() == TipoDeRespuesta.MULTISELECT && !pregunta.tieneOpciones()) {
             throw new BadRequestException("Las preguntas multirespuesta deben tener opciones");
@@ -41,6 +48,10 @@ public class FormularioService {
 
     public List<FormularioCompletableDTO> recuperarPlantillasFormulario() {
         return formularioDAO.findAll().stream().map(Formulario::fromModelToDTO).collect(Collectors.toList());
+    }
+
+    public List<FormularioString> recuperarPlantillasFormularioString() {
+        return formularioStringDAO.findAll();
     }
 
     public void guardarRespuestas(List<NuevaRespuestaDTO> nuevaRespuestaDTOList) {
