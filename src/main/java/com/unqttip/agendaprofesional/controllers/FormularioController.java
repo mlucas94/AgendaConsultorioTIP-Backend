@@ -26,6 +26,11 @@ public class FormularioController {
         return formularioService.recuperarPlantillasFormularioString();
     }
 
+    @GetMapping("/formularios/{idForm}")
+    public FormularioString recuperarFormulario(@PathVariable Long idForm) {
+        return formularioService.recuperarFormularioStringId(idForm);
+    }
+
     @PostMapping("/formularios/responder")
     public void agregarRespuestas(@RequestBody List<NuevaRespuestaDTO> nuevaRespuestaDTOList) {
         formularioService.guardarRespuestas(nuevaRespuestaDTOList);

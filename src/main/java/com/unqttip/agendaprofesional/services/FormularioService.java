@@ -54,6 +54,14 @@ public class FormularioService {
         return formularioStringDAO.findAll();
     }
 
+    public FormularioString recuperarFormularioStringId(Long idForm) {
+        Optional<FormularioString> maybeFormulario = formularioStringDAO.findById(idForm);
+        if (maybeFormulario.isEmpty()) {
+            throw new NotFoundException("Formulario " + idForm + " no encontrado");
+        }
+        return maybeFormulario.get();
+    }
+
     public void guardarRespuestas(List<NuevaRespuestaDTO> nuevaRespuestaDTOList) {
         List<Respuesta> respuestaList = nuevaRespuestaDTOList.stream().map(this::respuestaDesdeDTO).collect(Collectors.toList());
 
