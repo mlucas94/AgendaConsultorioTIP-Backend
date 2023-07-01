@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unqttip.agendaprofesional.model.Pregunta;
 import com.unqttip.agendaprofesional.model.TipoDeRespuesta;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class NuevaPreguntaDTO {
     private Long id;
@@ -16,7 +18,7 @@ public class NuevaPreguntaDTO {
     private String tipoDeRespuesta;
 
     @JsonProperty("lista_opciones")
-    private String opciones;
+    private List<String> opciones;
 
     public Long getId() {
         return id;
@@ -50,11 +52,11 @@ public class NuevaPreguntaDTO {
         this.tipoDeRespuesta = tipoDeRespuesta;
     }
 
-    public String getOpciones() {
+    public List<String> getOpciones() {
         return opciones;
     }
 
-    public void setOpciones(String opciones) {
+    public void setOpciones(List<String> opciones) {
         this.opciones = opciones;
     }
 
@@ -63,7 +65,9 @@ public class NuevaPreguntaDTO {
                 .preguntaNombre(this.pregunta_nombre)
                 .obligatoria(this.obligatoria)
                 .tipoDeRespuesta(TipoDeRespuesta.valueOf(this.tipoDeRespuesta.toUpperCase(Locale.ROOT)))
-                .opciones(this.opciones)
+                .opciones(this.opciones.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(";", "", "")))
                 .build();
         if (this.id != null) {
             pregunta.setId(id);
@@ -102,7 +106,7 @@ public class NuevaPreguntaDTO {
             return this;
         }
 
-        public NuevaPreguntaDTOBuilder opciones(String opciones) {
+        public NuevaPreguntaDTOBuilder opciones(List<String> opciones) {
             nuevaPreguntaDTO.setOpciones(opciones);
             return this;
         }

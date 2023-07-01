@@ -1,8 +1,11 @@
 package com.unqttip.agendaprofesional.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.unqttip.agendaprofesional.dtos.PreguntaCompletableDTO;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "preguntas")
@@ -64,6 +67,16 @@ public class Pregunta {
 
     public void setFormulario(Formulario formulario) {
         this.formulario = formulario;
+    }
+
+    public PreguntaCompletableDTO fromModelToDTO() {
+        return PreguntaCompletableDTO.builder()
+                .id(this.id)
+                .pregunta_nombre(this.preguntaNombre)
+                .obligatoria(this.obligatoria)
+                .tipo(this.tipoDeRespuesta.toString())
+                .opciones(new ArrayList<>(Arrays.asList(this.opciones.split(";"))))
+                .build();
     }
 
     public static PreguntaBuilder builder() {

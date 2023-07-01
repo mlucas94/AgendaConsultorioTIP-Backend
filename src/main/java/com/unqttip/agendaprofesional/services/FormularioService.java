@@ -1,9 +1,6 @@
 package com.unqttip.agendaprofesional.services;
 
-import com.unqttip.agendaprofesional.dtos.FormularioRespondidoDTO;
-import com.unqttip.agendaprofesional.dtos.NuevaRespuestaDTO;
-import com.unqttip.agendaprofesional.dtos.NuevoFormularioDTO;
-import com.unqttip.agendaprofesional.dtos.PreguntaRespondidaDTO;
+import com.unqttip.agendaprofesional.dtos.*;
 import com.unqttip.agendaprofesional.exceptions.BadRequestException;
 import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import com.unqttip.agendaprofesional.model.*;
@@ -37,8 +34,8 @@ public class FormularioService {
         }
     }
 
-    public List<Formulario> recuperarPlantillasFormulario() {
-        return formularioDAO.findAll();
+    public List<FormularioCompletableDTO> recuperarPlantillasFormulario() {
+        return formularioDAO.findAll().stream().map(Formulario::fromModelToDTO).collect(Collectors.toList());
     }
 
     public void guardarRespuestas(List<NuevaRespuestaDTO> nuevaRespuestaDTOList) {

@@ -1,5 +1,6 @@
 package com.unqttip.agendaprofesional.controllers;
 
+import com.unqttip.agendaprofesional.dtos.FormularioCompletableDTO;
 import com.unqttip.agendaprofesional.dtos.NuevaRespuestaDTO;
 import com.unqttip.agendaprofesional.dtos.NuevoFormularioDTO;
 import com.unqttip.agendaprofesional.model.Formulario;
@@ -20,8 +21,8 @@ public class FormularioController {
     }
 
     @GetMapping("/formularios")
-    public void recuperarFormularios() {
-        formularioService.recuperarPlantillasFormulario();
+    public List<FormularioCompletableDTO> recuperarFormularios() {
+        return formularioService.recuperarPlantillasFormulario();
     }
 
     @PostMapping("/formularios/responder")

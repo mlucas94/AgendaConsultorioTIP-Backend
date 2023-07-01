@@ -1,7 +1,10 @@
 package com.unqttip.agendaprofesional.model;
 
+import com.unqttip.agendaprofesional.dtos.FormularioCompletableDTO;
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "formularios")
@@ -35,6 +38,14 @@ public class Formulario {
 
     public void setPreguntas(List<Pregunta> preguntas) {
         this.preguntas = preguntas;
+    }
+
+    public FormularioCompletableDTO fromModelToDTO() {
+        return FormularioCompletableDTO.builder()
+                .id(this.id)
+                .titulo(this.titulo)
+                .preguntas(this.preguntas.stream().map(Pregunta::fromModelToDTO).collect(Collectors.toList()))
+                .build();
     }
 
     public static FormularioBuilder builder() {
