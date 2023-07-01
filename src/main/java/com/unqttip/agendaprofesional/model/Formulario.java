@@ -1,5 +1,7 @@
 package com.unqttip.agendaprofesional.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -9,7 +11,7 @@ public class Formulario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String titulo;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "formulario")
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Pregunta> preguntas;
 
     public Long getId() {

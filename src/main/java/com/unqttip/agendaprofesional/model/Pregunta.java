@@ -1,9 +1,6 @@
 package com.unqttip.agendaprofesional.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Pregunta {
@@ -13,7 +10,9 @@ public class Pregunta {
     private String pregunta_nombre;
     private Boolean obligatoria;
     private TipoDeRespuesta tipoDeRespuesta;
-    private String opciones; // opciones separadas por valor especifico, se guarda como string entero
+    private String opciones;
+    @ManyToOne
+    private Formulario formulario;
 
     public Long getId() {
         return id;
@@ -55,6 +54,14 @@ public class Pregunta {
         this.opciones = opciones;
     }
 
+    public Formulario getFormulario() {
+        return formulario;
+    }
+
+    public void setFormulario(Formulario formulario) {
+        this.formulario = formulario;
+    }
+
     public static PreguntaBuilder builder() {
         return new PreguntaBuilder();
     }
@@ -88,6 +95,11 @@ public class Pregunta {
 
         public PreguntaBuilder opciones(String opciones) {
             pregunta.setOpciones(opciones);
+            return this;
+        }
+
+        public PreguntaBuilder formulario(Formulario formulario) {
+            pregunta.setFormulario(formulario);
             return this;
         }
 
