@@ -32,7 +32,7 @@ public class FormularioService {
     }
 
     private void validarPregunta(Pregunta pregunta) {
-        if (pregunta.getTipoDeRespuesta() == TipoDeRespuesta.MULTIRESPUESTA && !pregunta.tieneOpciones()) {
+        if (pregunta.getTipoDeRespuesta() == TipoDeRespuesta.MULTISELECT && !pregunta.tieneOpciones()) {
             throw new BadRequestException("Las preguntas multirespuesta deben tener opciones");
         }
     }
