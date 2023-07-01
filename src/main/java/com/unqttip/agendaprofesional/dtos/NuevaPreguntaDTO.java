@@ -1,5 +1,6 @@
 package com.unqttip.agendaprofesional.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unqttip.agendaprofesional.model.Pregunta;
 import com.unqttip.agendaprofesional.model.TipoDeRespuesta;
 
@@ -7,9 +8,14 @@ import java.util.Locale;
 
 public class NuevaPreguntaDTO {
     private Long id;
+    @JsonProperty("pregunta_nombre")
     private String pregunta_nombre;
     private Boolean obligatoria;
+
+    @JsonProperty("tipo")
     private String tipoDeRespuesta;
+
+    @JsonProperty("lista_opciones")
     private String opciones;
 
     public Long getId() {
