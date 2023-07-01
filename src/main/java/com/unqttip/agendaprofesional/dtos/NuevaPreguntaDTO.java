@@ -9,7 +9,6 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class NuevaPreguntaDTO {
-    private Long id;
     @JsonProperty("pregunta_nombre")
     private String pregunta_nombre;
     private Boolean obligatoria;
@@ -19,14 +18,6 @@ public class NuevaPreguntaDTO {
 
     @JsonProperty("lista_opciones")
     private List<String> opciones;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getPregunta_nombre() {
         return pregunta_nombre;
@@ -69,9 +60,6 @@ public class NuevaPreguntaDTO {
                         .map(String::valueOf)
                         .collect(Collectors.joining(";", "", "")))
                 .build();
-        if (this.id != null) {
-            pregunta.setId(id);
-        }
         return pregunta;
     }
 
@@ -84,11 +72,6 @@ public class NuevaPreguntaDTO {
 
         private NuevaPreguntaDTOBuilder() {
             nuevaPreguntaDTO = new NuevaPreguntaDTO();
-        }
-
-        public NuevaPreguntaDTOBuilder id(Long id) {
-            nuevaPreguntaDTO.setId(id);
-            return this;
         }
 
         public NuevaPreguntaDTOBuilder pregunta_nombre(String pregunta_nombre) {

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @Table(name = "formularios")
 public class Formulario {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String titulo;
     @OneToMany(fetch = FetchType.LAZY)

@@ -7,6 +7,7 @@ import com.unqttip.agendaprofesional.model.*;
 import com.unqttip.agendaprofesional.repositories.FormularioDAO;
 import com.unqttip.agendaprofesional.repositories.PreguntaDAO;
 import com.unqttip.agendaprofesional.repositories.RespuestaDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,9 +15,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class FormularioService {
+    @Autowired
     private FormularioDAO formularioDAO;
+    @Autowired
     private PreguntaDAO preguntaDAO;
+    @Autowired
     private RespuestaDAO respuestaDAO;
+    @Autowired
     private PacienteService pacienteService;
 
     public void guardarNuevoFormulario(NuevoFormularioDTO nuevoFormularioDTO) {

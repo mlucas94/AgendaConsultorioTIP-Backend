@@ -5,6 +5,7 @@ import com.unqttip.agendaprofesional.dtos.NuevaRespuestaDTO;
 import com.unqttip.agendaprofesional.dtos.NuevoFormularioDTO;
 import com.unqttip.agendaprofesional.model.Formulario;
 import com.unqttip.agendaprofesional.services.FormularioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @EnableAutoConfiguration
 public class FormularioController {
+    @Autowired
     private FormularioService formularioService;
 
     @PostMapping("/formularios/crear")

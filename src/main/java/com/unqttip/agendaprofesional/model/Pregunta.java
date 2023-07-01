@@ -11,7 +11,7 @@ import java.util.Arrays;
 @Table(name = "preguntas")
 public class Pregunta {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String preguntaNombre;
     private Boolean obligatoria;
