@@ -3,6 +3,7 @@ package com.unqttip.agendaprofesional.model;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "respuestas")
 public class Respuesta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

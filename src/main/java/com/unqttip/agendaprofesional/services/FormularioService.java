@@ -12,7 +12,10 @@ import com.unqttip.agendaprofesional.repositories.PreguntaDAO;
 import com.unqttip.agendaprofesional.repositories.RespuestaDAO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +27,10 @@ public class FormularioService {
 
     public void guardarNuevoFormulario(NuevoFormularioDTO nuevoFormularioDTO) {
         Formulario nuevoFormulario = nuevoFormularioDTO.formularioFromDTO();
-        nuevoFormulario.getPreguntas().forEach(this::validarPregunta);
+        nuevoFormulario.getPreguntas().forEach(pregunta -> {
+            validarPregunta(pregunta);
+            pregunta.setFormulario(nuevoFormulario);
+        });
         formularioDAO.save(nuevoFormulario);
     }
 
@@ -46,5 +52,14 @@ public class FormularioService {
                 .pregunta(preguntaDAO.findById(nuevaRespuestaDTO.getPreguntaId()).get())
                 .paciente(pacienteService.recuperarPaciente(nuevaRespuestaDTO.getPacienteId()))
                 .build();
+    }
+
+    public List<Formulario> recuperarFormulariosRespondidos(Long idPaciente) {
+        Set<Formulario> formularios = new HashSet<>();
+        List<Respuesta> respuestasPaciente = respuestaDAO.findByPacienteId(idPaciente);
+        respuestasPaciente.forEach(respuesta -> {
+            formularios.add(respuesta.getPregunta().getFormulario());
+        });
+        return new ArrayList<>(formularios);
     }
 }

@@ -1,8 +1,11 @@
 package com.unqttip.agendaprofesional.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
+@Table(name = "preguntas")
 public class Pregunta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,6 +15,7 @@ public class Pregunta {
     private TipoDeRespuesta tipoDeRespuesta;
     private String opciones;
     @ManyToOne
+    @JsonIgnore
     private Formulario formulario;
 
     public Long getId() {

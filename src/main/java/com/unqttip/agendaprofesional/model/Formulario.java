@@ -1,11 +1,10 @@
 package com.unqttip.agendaprofesional.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "formularios")
 public class Formulario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
