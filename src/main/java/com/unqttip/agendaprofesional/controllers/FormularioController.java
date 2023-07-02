@@ -1,6 +1,7 @@
 package com.unqttip.agendaprofesional.controllers;
 
 import com.unqttip.agendaprofesional.dtos.NuevoFormularioDTO;
+import com.unqttip.agendaprofesional.dtos.NuevoFormularioRespondidoDTO;
 import com.unqttip.agendaprofesional.model.Formulario;
 import com.unqttip.agendaprofesional.services.FormularioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,10 @@ public class FormularioController {
     @GetMapping("/formularios/listado")
     public List<Formulario> recuperarFormularios() {
         return formularioService.recuperarFormularios();
+    }
+
+    @PostMapping("/formularios/responder")
+    public void responderFormulario(@RequestBody NuevoFormularioRespondidoDTO nuevoFormularioRespondidoDTO) {
+        formularioService.responderFormulario(nuevoFormularioRespondidoDTO);
     }
 }
