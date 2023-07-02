@@ -1,5 +1,7 @@
 package com.unqttip.agendaprofesional.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,6 +16,7 @@ public class Pregunta {
     private TipoDeRespuesta tipo;
     private String opciones;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Formulario formulario;
 
     public Long getId() {
