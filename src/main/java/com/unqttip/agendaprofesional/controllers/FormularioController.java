@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @EnableAutoConfiguration
 public class FormularioController {
@@ -21,5 +23,10 @@ public class FormularioController {
     @GetMapping("/formularios/{idFormulario}")
     public Formulario recuperarFormularioPorId(@PathVariable Long idFormulario) {
         return formularioService.recuperarPorId(idFormulario);
+    }
+
+    @GetMapping("/formularios/listado")
+    public List<Formulario> recuperarFormularios() {
+        return formularioService.recuperarFormularios();
     }
 }

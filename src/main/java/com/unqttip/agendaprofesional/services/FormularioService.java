@@ -10,6 +10,7 @@ import com.unqttip.agendaprofesional.repositories.FormularioDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,5 +39,9 @@ public class FormularioService {
             throw new NotFoundException("Formulario " + idFormulario + " no encontrado");
         }
         return maybeFormulario.get();
+    }
+
+    public List<Formulario> recuperarFormularios() {
+        return formularioDAO.findAll();
     }
 }
