@@ -15,9 +15,9 @@ public class Turno {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime horarioInicio;
-    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime horarioFin;
     private TipoDeTurno tipo;
 

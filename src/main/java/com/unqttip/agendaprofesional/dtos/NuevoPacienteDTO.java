@@ -6,7 +6,7 @@ public class NuevoPacienteDTO {
     private Long dni;
     private String nombre;
     private String email;
-    private Integer telefono;
+    private Long telefono;
     private Integer edad;
     private String obraSocial;
     private String plan;
@@ -35,11 +35,11 @@ public class NuevoPacienteDTO {
         this.email = email;
     }
 
-    public Integer getTelefono() {
+    public Long getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(Integer telefono) {
+    public void setTelefono(Long telefono) {
         this.telefono = telefono;
     }
 
@@ -110,7 +110,7 @@ public class NuevoPacienteDTO {
             return this;
         }
 
-        public NuevoPacienteDTOBuilder telefono(Integer telefono) {
+        public NuevoPacienteDTOBuilder telefono(Long telefono) {
             nuevoPacienteDTO.setTelefono(telefono);
             return this;
         }
