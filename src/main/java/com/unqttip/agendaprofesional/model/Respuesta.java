@@ -1,9 +1,11 @@
 package com.unqttip.agendaprofesional.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.unqttip.agendaprofesional.dtos.PreguntaRespondidaDTO;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "respuestas")
@@ -113,5 +115,17 @@ public class Respuesta {
         public Respuesta build() {
             return respuesta;
         }
+    }
+
+    public PreguntaRespondidaDTO fromModelToDTO() {
+        return PreguntaRespondidaDTO.builder()
+                .idPregunta(this.pregunta.getId())
+                .preguntaNombre(this.pregunta.getPreguntaNombre())
+                .obligatoria(this.pregunta.getObligatoria())
+                .tipo(this.pregunta.getTipo().name())
+                .opciones(this.pregunta.getOpciones())
+                .respuestaNombre(this.respuestaNombre)
+                .fecha(this.fecha.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .build();
     }
 }

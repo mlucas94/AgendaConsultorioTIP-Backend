@@ -1,7 +1,6 @@
 package com.unqttip.agendaprofesional.services;
 
-import com.unqttip.agendaprofesional.dtos.NuevoFormularioDTO;
-import com.unqttip.agendaprofesional.dtos.NuevoFormularioRespondidoDTO;
+import com.unqttip.agendaprofesional.dtos.*;
 import com.unqttip.agendaprofesional.exceptions.BadRequestException;
 import com.unqttip.agendaprofesional.exceptions.NotFoundException;
 import com.unqttip.agendaprofesional.model.*;
@@ -12,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class FormularioService {
@@ -77,5 +79,23 @@ public class FormularioService {
             throw new NotFoundException("Pregunta " + idPregunta + " no encontrada");
         }
         return maybePregunta.get();
+    }
+
+    public List<PortadaFormularioDTO> recuperarFormulariosRespondidosPorPaciente(Long idPaciente) {
+        List<Respuesta> respuestasPaciente = respuestaDAO.findByPaciente(idPaciente);
+        List<Formulario> formulariosCompletados = respuestasPaciente.stream().map(Respuesta::getFormulario).distinct().collect(Collectors.toList());
+        return formulariosCompletados.stream().map(Formulario::fromModelToPortadaDTO).collect(Collectors.toList());
+    }
+
+    public FormularioRespondidoDTO recuperarRespuestasDeUsuarioEnForm(Long idPaciente, Long idFormulario) {
+        Formulario formulario = this.recuperarPorId(idFormulario);
+        List<Respuesta> respuestas = respuestaDAO.findByPacienteAndFormulario(idPaciente, idFormulario);
+        List<PreguntaRespondidaDTO> preguntasRespondidas = respuestas.stream().map(Respuesta::fromModelToDTO).collect(Collectors.toList());
+        return FormularioRespondidoDTO.builder()
+                .idFormulario(idFormulario)
+                .titulo(formulario.getTitulo())
+                .idPaciente(idPaciente)
+                .preguntasRespondidas(preguntasRespondidas)
+                .build();
     }
 }

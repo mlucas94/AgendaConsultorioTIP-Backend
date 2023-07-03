@@ -1,5 +1,7 @@
 package com.unqttip.agendaprofesional.model;
 
+import com.unqttip.agendaprofesional.dtos.PortadaFormularioDTO;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -66,5 +68,12 @@ public class Formulario {
         public Formulario build() {
             return formulario;
         }
+    }
+
+    public PortadaFormularioDTO fromModelToPortadaDTO() {
+        return PortadaFormularioDTO.builder()
+                .id(this.id)
+                .titulo(this.titulo)
+                .build();
     }
 }
