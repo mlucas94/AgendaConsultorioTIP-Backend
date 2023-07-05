@@ -35,7 +35,7 @@ public class ProfesionalService {
 
         Profesional profesional = (Profesional) authentication.getPrincipal();
         String accessToken = jwtUtil.generateAccessToken(profesional);
-        return new LoginAuthDTO(profesional.getEmail(), accessToken);
+        return new LoginAuthDTO(profesional.getEmail(), profesional.getNombre(), accessToken);
     }
 
     public void registrar(NuevoProfesionalDTO nuevoProfesionalDTO) {
