@@ -199,4 +199,19 @@ public class TurnoService {
         }
         return result;
     }
+
+    public List<Long> getIdsDesplazados(Long id) {
+        Optional<Turno> maybeTurno = turnoDAO.findById(id);
+        if(maybeTurno == null) {
+            throw new NotFoundException("No se encontro el turno solicitado");
+        }
+
+        Turno turno = maybeTurno.get();
+
+        List<Turno> turnosDesplazados = turnoDAO.findWithinHourRange(turno.getHorarioInicio(), turno.getHorarioFin());
+
+        List<Long> ids = turnosDesplazados.stream().map(Turno::getId).collect(Collectors.toList());
+
+        return ids;
+    }
 }

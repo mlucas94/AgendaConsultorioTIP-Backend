@@ -89,4 +89,9 @@ public class TurnoController {
         LandingDTO result = turnoService.getLanding();
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("landing/alerta_desplazado/{id}")
+    public List<Long> getIdsDesplazados(@PathVariable Long id) {
+        return turnoService.getIdsDesplazados(id);
+    }
 }
