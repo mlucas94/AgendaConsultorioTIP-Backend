@@ -108,7 +108,7 @@ public class TurnoControllerTest {
                 .dni(123L)
                 .nombre("Juan Perez")
                 .email("juanperez@gmail.com")
-                .telefono(1158888888)
+                .telefono(1158888888L)
                 .edad(40)
                 .obraSocial("Osde")
                 .plan("210")
