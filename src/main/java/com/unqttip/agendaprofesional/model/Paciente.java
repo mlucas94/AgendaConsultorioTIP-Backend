@@ -22,7 +22,7 @@ public class Paciente {
 
     private String nombre;
     private String email;
-    private Integer telefono;
+    private Long telefono;
     private Integer edad;
 
     //TODO: foreign keys
@@ -70,11 +70,11 @@ public class Paciente {
         this.email = email;
     }
 
-    public Integer getTelefono() {
+    public Long getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(Integer telefono) {
+    public void setTelefono(Long telefono) {
         this.telefono = telefono;
     }
 
@@ -142,7 +142,7 @@ public class Paciente {
             return this;
         }
 
-        public PacienteBuilder telefono(Integer telefono) {
+        public PacienteBuilder telefono(Long telefono) {
             paciente.setTelefono(telefono);
             return this;
         }
