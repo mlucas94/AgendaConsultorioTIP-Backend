@@ -21,6 +21,8 @@ public class Respuesta {
     private Formulario formulario;
     @ManyToOne(fetch = FetchType.LAZY)
     private Paciente paciente;
+    @ManyToOne(fetch= FetchType.LAZY)
+    private Turno turno;
     private LocalDateTime fecha;
 
     public Long getId() {
@@ -45,6 +47,14 @@ public class Respuesta {
 
     public void setPregunta(Pregunta pregunta) {
         this.pregunta = pregunta;
+    }
+
+    public Turno getTurno() {
+        return turno;
+    }
+
+    public void setTurno(Turno turno) {
+        this.turno = turno;
     }
 
     public Formulario getFormulario() {
@@ -109,6 +119,11 @@ public class Respuesta {
 
         public RespuestaBuilder fecha(LocalDateTime fecha) {
             respuesta.setFecha(fecha);
+            return this;
+        }
+
+        public RespuestaBuilder turno(Turno turno) {
+            respuesta.setTurno(turno);
             return this;
         }
 

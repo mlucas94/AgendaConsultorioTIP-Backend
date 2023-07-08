@@ -24,6 +24,8 @@ public class FormularioService {
     @Autowired
     private PacienteService pacienteService;
     @Autowired
+    private TurnoService turnoService;
+    @Autowired
     private PreguntaDAO preguntaDAO;
     @Autowired
     private RespuestaDAO respuestaDAO;
@@ -95,6 +97,44 @@ public class FormularioService {
                 .idFormulario(idFormulario)
                 .titulo(formulario.getTitulo())
                 .idPaciente(idPaciente)
+                .preguntasRespondidas(preguntasRespondidas)
+                .build();
+    }
+
+    public void responderFormularioTurno(NuevoFormularioRespondidoDTO respondidoDTO) {
+        LocalDateTime fechaRespondida = LocalDateTime.now();
+        Turno turno = turnoService.recuperarTurno(respondidoDTO.getIdTurno());
+        Paciente paciente = pacienteService.recuperarPaciente(respondidoDTO.getIdPaciente());
+        Formulario formulario = this.recuperarPorId(respondidoDTO.getIdFormulario());
+
+        respondidoDTO.getNuevasRespuestas().forEach(nuevaRespuestaDTO -> {
+            Pregunta preguntaRespondida = recuperarPreguntaPorId(nuevaRespuestaDTO.getIdPregunta());
+            Respuesta nuevaRespuesta = Respuesta.builder()
+                    .respuestaNombre(nuevaRespuestaDTO.getRespuestaNombre())
+                    .pregunta(preguntaRespondida)
+                    .formulario(formulario)
+                    .paciente(paciente)
+                    .turno(turno)
+                    .fecha(fechaRespondida)
+                    .build();
+            respuestaDAO.save(nuevaRespuesta);
+        });
+    }
+
+    public List<PortadaFormularioDTO> recuperarFormulariosRespondidosEnTurno(Long idTurno) {
+        List<Respuesta> respuestas = respuestaDAO.findByTurno(idTurno);
+        List<Formulario> formulariosCompletados = respuestas.stream().map(Respuesta::getFormulario).distinct().collect(Collectors.toList());
+        return formulariosCompletados.stream().map(Formulario::fromModelToPortadaDTO).collect(Collectors.toList());
+    }
+
+    public FormularioRespondidoDTO recuperarRespuestasEnTurnoEnForm(Long idTurno, Long idFormulario) {
+        Formulario formulario = this.recuperarPorId(idFormulario);
+        List<Respuesta> respuestas = respuestaDAO.findByTurnoAndFormulario(idTurno, idFormulario);
+        List<PreguntaRespondidaDTO> preguntasRespondidas = respuestas.stream().map(Respuesta::fromModelToDTO).collect(Collectors.toList());
+        return FormularioRespondidoDTO.builder()
+                .idFormulario(idFormulario)
+                .titulo(formulario.getTitulo())
+                .idTurno(idTurno)
                 .preguntasRespondidas(preguntasRespondidas)
                 .build();
     }
