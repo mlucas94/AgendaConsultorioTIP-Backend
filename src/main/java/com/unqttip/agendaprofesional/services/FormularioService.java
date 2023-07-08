@@ -104,7 +104,8 @@ public class FormularioService {
     public void responderFormularioTurno(NuevoFormularioRespondidoDTO respondidoDTO) {
         LocalDateTime fechaRespondida = LocalDateTime.now();
         Turno turno = turnoService.recuperarTurno(respondidoDTO.getIdTurno());
-        Paciente paciente = pacienteService.recuperarPaciente(respondidoDTO.getIdPaciente());
+        Long idPaciente = turno.getPaciente().getId();
+        Paciente paciente = pacienteService.recuperarPaciente(idPaciente);
         Formulario formulario = this.recuperarPorId(respondidoDTO.getIdFormulario());
 
         respondidoDTO.getNuevasRespuestas().forEach(nuevaRespuestaDTO -> {
