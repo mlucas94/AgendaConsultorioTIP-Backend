@@ -32,6 +32,9 @@ public class Turno {
             inverseJoinColumns = @JoinColumn(name="turno_id", referencedColumnName = "id"))*/
     private Set<Archivo> archivos;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Respuesta> respuestas;
+
     private EstadoDeTurno estado;
 
     public Set<Archivo> getArchivos() {
@@ -88,6 +91,14 @@ public class Turno {
 
     public void setEstado(EstadoDeTurno estado) {
         this.estado = estado;
+    }
+
+    public Set<Respuesta> getRespuestas() {
+        return respuestas;
+    }
+
+    public void setRespuestas(Set<Respuesta> respuestas) {
+        this.respuestas = respuestas;
     }
 
     public static TurnoBuilder builder() {

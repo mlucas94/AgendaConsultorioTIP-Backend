@@ -6,6 +6,7 @@ public class FormularioRespondidoDTO {
     private Long idFormulario;
     private String titulo;
     private Long idPaciente;
+    private Long idTurno;
     private List<PreguntaRespondidaDTO> preguntasRespondidas;
 
     public Long getIdFormulario() {
@@ -38,6 +39,14 @@ public class FormularioRespondidoDTO {
 
     public void setPreguntasRespondidas(List<PreguntaRespondidaDTO> preguntasRespondidas) {
         this.preguntasRespondidas = preguntasRespondidas;
+    }
+
+    public Long getIdTurno() {
+        return idTurno;
+    }
+
+    public void setIdTurno(Long idTurno) {
+        this.idTurno = idTurno;
     }
 
     public static FormularioRespondidoDTOBuilder builder() {
@@ -73,6 +82,11 @@ public class FormularioRespondidoDTO {
 
         public FormularioRespondidoDTO build() {
             return formularioRespondidoDTO;
+        }
+
+        public FormularioRespondidoDTOBuilder idTurno(Long idTurno) {
+            formularioRespondidoDTO.setIdTurno(idTurno);
+            return this;
         }
     }
 }

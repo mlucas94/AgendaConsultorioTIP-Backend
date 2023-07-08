@@ -7,6 +7,8 @@ public class NuevoFormularioRespondidoDTO {
     private Long idFormulario;
     private List<NuevaRespuestaDTO> nuevasRespuestas;
 
+    private Long idTurno;
+
     public Long getIdPaciente() {
         return idPaciente;
     }
@@ -29,6 +31,14 @@ public class NuevoFormularioRespondidoDTO {
 
     public void setNuevasRespuestas(List<NuevaRespuestaDTO> nuevasRespuestas) {
         this.nuevasRespuestas = nuevasRespuestas;
+    }
+
+    public Long getIdTurno() {
+        return idTurno;
+    }
+
+    public void setIdTurno(Long idTurno) {
+        this.idTurno = idTurno;
     }
 
     public static NuevoFormularioRespondidoDTOBuilder builder() {
