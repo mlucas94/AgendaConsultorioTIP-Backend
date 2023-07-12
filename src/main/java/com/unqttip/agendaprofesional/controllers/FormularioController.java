@@ -56,7 +56,7 @@ public class FormularioController {
         return formularioService.recuperarFormulariosRespondidosEnTurno(idTurno);
     }
 
-    @GetMapping("/formularios/respuestas")
+    @GetMapping("/formularios/respuestas_turno/{idFormulario}")
     public FormularioRespondidoDTO recuperarRespuestasEnTurnoEnForm(@RequestParam Long idTurno, @PathVariable Long idFormulario) {
         return formularioService.recuperarRespuestasEnTurnoEnForm(idTurno, idFormulario);
     }
